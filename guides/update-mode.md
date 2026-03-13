@@ -65,3 +65,11 @@ Always append a new dated entry to `docs/changelog.md`:
 - What changed
 - Which modules were affected
 ```
+
+## Step 7: Log Stats
+
+Read `guides/stats-logging.md` and append one entry to `stats/runs.jsonl`.
+
+- `mode`: `"update"`
+- `docs_generated`: count of doc files that were actually edited this run
+- `docs_skipped`: 0

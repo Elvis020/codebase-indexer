@@ -86,3 +86,11 @@ Tell the user:
 - Which files were created
 - That CLAUDE.md now has auto-update rules installed
 - One sentence summary (e.g., "Spring Boot REST API with 4 service modules and PostgreSQL.")
+
+## Step 7: Log Stats
+
+Read `guides/stats-logging.md` and append one entry to `stats/runs.jsonl`.
+
+- `mode`: `"full"` if all 5 docs were generated, `"supplement"` if only 3 gap docs were generated
+- `docs_generated`: count of files actually written this run
+- `docs_skipped`: 2 if supplement mode, 0 if full mode

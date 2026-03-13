@@ -42,13 +42,19 @@ Both guides reference templates in `templates/` — read those when generating o
     initial-scan.md               ← Phase 1: full scan steps
     update-mode.md                ← Phase 2: diff-based update steps
     gitignore-rules.md            ← .gitignore handling
+    stats-logging.md              ← how to append a run entry to stats/runs.jsonl
+    stats-report.md               ← how to summarize stats when user asks
   templates/
     architecture.md               ← template for docs/architecture.md
     implementation.md             ← template for docs/implementation.md
     patterns.md                   ← template for docs/patterns.md
     decisions.md                  ← template for docs/decisions.md
     changelog.md                  ← template for docs/changelog.md
+  stats/
+    runs.jsonl                    ← append-only log of every indexer run (auto-created)
 ```
+
+**Stats:** After every run, a line is appended to `stats/runs.jsonl`. To see a summary, say "show codebase-indexer stats" — Claude will read `guides/stats-report.md` and summarize.
 
 ## Common Mistakes
 
