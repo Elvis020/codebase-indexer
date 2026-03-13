@@ -8,9 +8,19 @@ Use **Read** on each file in `docs/`. Understand what is already documented.
 
 ## Step 2: Identify What Changed
 
+Prefer the merge-base form to correctly handle merge commits and squash merges:
+
+```bash
+git diff --name-only $(git merge-base HEAD HEAD~1)..HEAD
+```
+
+Fallback if merge-base fails (simple linear history):
+
 ```bash
 git diff HEAD~1 --name-only
 ```
+
+> **Note:** `HEAD~1` breaks on merge commits (returns the second parent diff) and on squash merges (shows the entire branch as one commit). The merge-base form handles both cases correctly.
 
 Note which modules/packages were touched.
 

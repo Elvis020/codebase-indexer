@@ -2,6 +2,21 @@
 
 Follow these steps in order. Read templates from `templates/` when generating each doc file.
 
+## Step 0: Check for Existing CLAUDE.md (Dedup Gate)
+
+Read `CLAUDE.md` if it exists. Ask yourself: does it already document architecture, directory structure, key abstractions, state management, routing, and conventions?
+
+**If yes (comprehensive CLAUDE.md) → Supplement Mode:**
+- Skip generating `docs/architecture.md` and `docs/implementation.md` — they would duplicate what CLAUDE.md already covers and create two sources of truth that will drift.
+- Only generate: `docs/patterns.md`, `docs/decisions.md`, `docs/changelog.md`
+- Tell the user: "CLAUDE.md already covers architecture and implementation. Generating only gap docs: patterns, decisions, changelog."
+- Jump to Step 3 (generating only the 3 gap files), then continue from Step 4.
+
+**If no CLAUDE.md, or it's minimal → Full Mode:**
+- Proceed with all steps below and generate all 5 docs.
+
+---
+
 ## Step 1: Detect Project Type
 
 Check for project manifests (use Glob/Read):

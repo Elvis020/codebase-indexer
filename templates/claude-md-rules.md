@@ -2,6 +2,8 @@
 
 These rules are injected into the project's CLAUDE.md by the codebase-indexer skill. Append them to an existing CLAUDE.md or create a new one.
 
+**Important before injecting:** Read the existing CLAUDE.md for conflicting instructions (e.g., "do not run commands autonomously"). If conflicts exist, adjust the rules block below to fit — never inject rules that contradict the project's existing guidelines.
+
 ---
 
 ## Rules to inject:
@@ -9,25 +11,35 @@ These rules are injected into the project's CLAUDE.md by the codebase-indexer sk
 ```markdown
 ## Codebase Index
 
-This project has a living `docs/` folder with architecture, implementation, patterns, decisions, and changelog files.
+This project has a living `docs/` folder with patterns, decisions, and changelog files.
 
 ### Session Start
-- Read `docs/architecture.md` and `docs/implementation.md` before doing any work.
+- Read `docs/architecture.md` and `docs/implementation.md` if they exist before doing any work.
 - These files contain the project map — do not re-scan the codebase from scratch.
+- If the project has a comprehensive CLAUDE.md, that takes precedence over doc files for architecture and implementation details.
 
-### After Every Feature or Bugfix
-1. Run `git diff HEAD~1 --name-only` to identify changed files.
-2. Re-scan only the changed files and their direct neighbors (same package/directory).
-3. Update the relevant doc files using targeted edits (do not rewrite unaffected sections):
-   - New module/package → update `docs/architecture.md`, `docs/implementation.md`
-   - New class/function/endpoint → update `docs/implementation.md`
-   - Renamed files/folders → update `docs/architecture.md`, `docs/patterns.md`
-   - New dependency → update `docs/architecture.md`
-   - New naming/code pattern → update `docs/patterns.md`
-4. Ask: "Did this change involve making or reversing an architectural decision?"
+### Updating Docs (run /codebase-indexer or invoke explicitly)
+
+Update docs at natural checkpoints — before committing, before a PR, or when explicitly asked. Do not update after every small change.
+
+To identify what changed, suggest the user run:
+```
+git diff --name-only $(git merge-base HEAD HEAD~1)..HEAD
+```
+or share the output with you. Do not run this autonomously unless the project's CLAUDE.md explicitly allows autonomous shell commands.
+
+Once you know what changed, apply targeted edits to the relevant doc files:
+- New module/package → update `docs/architecture.md`, `docs/implementation.md` (if they exist)
+- New class/function/endpoint → update `docs/implementation.md` (if it exists)
+- Renamed files/folders → update `docs/architecture.md`, `docs/patterns.md`
+- New dependency → update `docs/architecture.md` (if it exists)
+- New naming/code pattern → update `docs/patterns.md`
+
+Then:
+1. Ask: "Did this change involve making or reversing an architectural decision?"
    - If yes → append an ADR entry to `docs/decisions.md`
    - If no → skip
-5. Append a dated changelog entry to `docs/changelog.md`:
+2. Append a dated changelog entry to `docs/changelog.md`:
    ```
    ## YYYY-MM-DD — [brief description]
    - What changed

@@ -1,5 +1,21 @@
 # .gitignore Rules
 
+## Step 1: Ask the user
+
+Before touching `.gitignore`, ask:
+
+> "Should `docs/` be committed to the repo (shared with the team) or gitignored (local to your machine only)?"
+
+| Choice | When to use |
+|--------|------------|
+| **Committed (shared)** | Team project, docs help other contributors, you want docs to persist across machines |
+| **Gitignored (local)** | Personal project, you don't want to add AI-generated files to the repo, or the repo has a policy against generated files |
+
+## Step 2: Apply the choice
+
+**If committed:** Do nothing to `.gitignore`. The docs will be tracked by git normally.
+
+**If gitignored:**
 1. Read `.gitignore` if it exists.
 2. If `docs/` is already listed — do nothing.
 3. If `.gitignore` exists but lacks `docs/` — append:
