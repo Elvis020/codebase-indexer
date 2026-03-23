@@ -18,6 +18,16 @@ This project has a living `docs/` folder with patterns, decisions, and changelog
 - These files contain the project map — do not re-scan the codebase from scratch.
 - If the project has a comprehensive CLAUDE.md, that takes precedence over doc files for architecture and implementation details.
 
+### Graph-Powered Queries (if code-review-graph is installed)
+
+If `.code-review-graph/graph.db` exists in this project, prefer MCP tools over file scanning:
+- `get_impact_radius_tool()` — before doing any Glob/Grep to find what a change affects
+- `get_review_context_tool()` — when performing a code review or summarising what changed
+- `query_graph_tool(pattern, target)` — to find callers, tests, or dependents of any function
+- `semantic_search_nodes_tool(query)` — to find abstractions by concept rather than exact name
+
+Fall back to Grep/Glob only when the graph does not cover what you need (e.g. config files, comments, string literals).
+
 ### Updating Docs (run /codebase-indexer or invoke explicitly)
 
 Update docs at natural checkpoints — before committing, before a PR, or when explicitly asked. Do not update after every small change.

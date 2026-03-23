@@ -89,8 +89,13 @@ Tell the user:
 
 ## Step 7: Log Stats
 
-Read `guides/stats-logging.md` and append one entry to `stats/runs.jsonl`.
+Read `guides/stats-logging.md` and append one entry to `stats/runs.jsonl`, then output the inline savings card.
 
 - `mode`: `"full"` if all 5 docs were generated, `"supplement"` if only 3 gap docs were generated
 - `docs_generated`: count of files actually written this run
 - `docs_skipped`: 2 if supplement mode, 0 if full mode
+- `project_files`: approximate source file count from Step 2 scan (exclude node_modules, dist, etc.)
+- `tokens_saved_this_run`: `0` for full, `6000` for supplement
+- `tokens_saved_future_est`: use the project_files scale table in stats-logging.md for full; `35000` for supplement
+- `cost_saved_est_usd`: `(tokens_saved_this_run + tokens_saved_future_est) / 1_000_000 * 3.0`
+- `graph_available`: `true` if `.code-review-graph/graph.db` was present

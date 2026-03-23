@@ -24,7 +24,17 @@ git diff HEAD~1 --name-only
 
 Note which modules/packages were touched.
 
-## Step 3: Re-Scan Affected Files
+## Step 3: Identify Affected Files and Blast Radius
+
+**If `graph_available = true` (`.code-review-graph/graph.db` exists):**
+
+Call the MCP tools instead of Glob/Grep:
+1. `get_impact_radius_tool()` — returns the exact set of nodes and files affected by the changes (callers, dependents, inheritors, tests). No manual file scanning needed.
+2. `get_review_context_tool()` — returns source snippets for changed areas plus structural review guidance.
+
+This replaces the entire Glob/Grep neighborhood scan and costs ~300 tokens vs. 2,000–8,000 for manual scanning.
+
+**If `graph_available = false`:**
 
 Use Glob + Grep on the changed files and their direct neighbors (same package/directory). Do **not** re-scan the whole project.
 
@@ -73,3 +83,4 @@ Read `guides/stats-logging.md` and append one entry to `stats/runs.jsonl`.
 - `mode`: `"update"`
 - `docs_generated`: count of doc files that were actually edited this run
 - `docs_skipped`: 0
+- `graph_available`: `true` if `.code-review-graph/graph.db` was present and used, `false` otherwise
