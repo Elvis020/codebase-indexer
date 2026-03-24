@@ -83,23 +83,21 @@ Uses Sonnet input token rate (~$3/1M). Round to 4 decimal places.
 
 ## Inline savings card (required after every run)
 
-After logging, output this card to the user:
+After logging, output this stacked key/value block to the user:
 
 ```
-─────────────────────────────────────────
-  Codebase Indexer · Run Complete
-  Project : <project>
-  Mode    : <mode>  |  Files: ~<project_files>
-
-  This run  : <tokens_saved_this_run> tokens saved
-  Per session (future): ~<tokens_saved_future_est> tokens/session
-  Est. cost saved: ~$<cost_saved_est_usd>
-─────────────────────────────────────────
+Codebase Indexer · Run Complete
+Project            : <project>
+Mode               : <mode>
+Files (approx)     : ~<project_files>
+This run           : <tokens_saved_this_run> tokens saved
+Future per session : ~<tokens_saved_future_est> tokens/session
+Est. cost saved    : ~$<cost_saved_est_usd>
 ```
 
 For `full` mode where `tokens_saved_this_run` is 0, replace that line with:
 ```
-  This run  : baseline (first index — future sessions benefit)
+This run           : baseline (first index - future sessions benefit)
 ```
 
 ---

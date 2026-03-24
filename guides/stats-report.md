@@ -38,36 +38,26 @@ Before rendering the report, compute:
 ## Report format
 
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  Codebase Indexer · Token Intelligence
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Codebase Indexer · Token Intelligence
+Runs               : <total_runs> runs across <project_count> projects
+Period             : <first_date> -> <latest_date>
 
-  Runs      <total_runs> runs across <project_count> projects
-  Period    <first_date> → <latest_date>
+Savings Summary
+Tokens saved (all) : ~<total_tokens>
+Estimated cost     : ~$<total_cost>
+Avg per run        : ~<avg_tokens>/run
 
-  SAVINGS SUMMARY
-  ┌─────────────────────────────────────────────┐
-  │  Tokens saved (all time)  ~<total_tokens>   │
-  │  Estimated cost saved     ~$<total_cost>    │
-  │  Avg per run              ~<avg_tokens>/run │
-  └─────────────────────────────────────────────┘
+Breakdown by mode
+full               : x<n> -> <tokens> tokens (~$<cost>)
+supplement         : x<n> -> <tokens> tokens (~$<cost>)
+update             : x<n> -> <tokens> tokens (~$<cost>)
 
-  BREAKDOWN BY MODE
-  full       ×<n>   → <tokens> tokens  (~$<cost>)
-  supplement ×<n>   → <tokens> tokens  (~$<cost>)
-  update     ×<n>   → <tokens> tokens  (~$<cost>)
+By project
+<project>          : <mode summary> | ~<tokens> tokens (~$<cost>)
+...
 
-  BY PROJECT
-  <project>   <mode summary>   ~<tokens> tokens  (~$<cost>)
-  ...
-
-  INDEX HEALTH
-  <health assessment — see below>
-
-  GRAPH BOOST
-  <graph section — see below>
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Index health       : <health assessment - see below>
+Graph boost        : <graph section - see below>
 ```
 
 ---
@@ -111,45 +101,36 @@ For graph extra savings: `graph_runs * 5000` tokens above the non-graph update b
 ## Example output
 
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  Codebase Indexer · Token Intelligence
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Codebase Indexer · Token Intelligence
+Runs               : 9 runs across 8 projects
+Period             : 2026-03-13 -> 2026-03-22
 
-  Runs      9 runs across 8 projects
-  Period    2026-03-13 → 2026-03-22
+Savings Summary
+Tokens saved (all) : ~388k
+Estimated cost     : ~$1.16
+Avg per run        : ~43k/run
 
-  SAVINGS SUMMARY
-  ┌─────────────────────────────────────────────┐
-  │  Tokens saved (all time)  ~388k             │
-  │  Estimated cost saved     ~$1.16            │
-  │  Avg per run              ~43k/run          │
-  └─────────────────────────────────────────────┘
+Breakdown by mode
+full               : x7 -> 0 this run (+315k future) (~$0.95)
+supplement         : x1 -> 41k (+35k future) (~$0.23)
+update             : x1 -> 17k (~$0.05)
 
-  BREAKDOWN BY MODE
-  full       ×7   → 0 this run  (+315k future)  (~$0.95)
-  supplement ×1   → 41k         (+35k future)   (~$0.23)
-  update     ×1   → 17k                         (~$0.05)
+By project
+event-mapper-v2    : supplement + update | ~93k (~$0.28)
+devflow            : full | ~45k (~$0.14)
+mac-download-mgr   : full | ~45k (~$0.14)
+dstv-channels      : full | ~20k (~$0.06)
+claude-token-disp  : full | ~8k (~$0.02)
+payroll-app        : full | ~45k (~$0.14)
+ios                : full | ~90k (~$0.27)
+concord            : full | ~45k (~$0.14)
 
-  BY PROJECT
-  event-mapper-v2     supplement + update   ~93k   (~$0.28)
-  devflow             full                  ~45k   (~$0.14)
-  mac-download-mgr    full                  ~45k   (~$0.14)
-  dstv-channels       full                  ~20k   (~$0.06)
-  claude-token-disp   full                  ~8k    (~$0.02)
-  payroll-app         full                  ~45k   (~$0.14)
-  ios                 full                  ~90k   (~$0.27)
-  concord             full                  ~45k   (~$0.14)
+Index health       : 7 projects indexed but never updated: devflow, mac-download-manager,
+                     dstv-channels-lineup, claude-token-display, payroll-app, ios, concord.
+                     Run "update docs" after your next feature on these to start compounding savings.
 
-  INDEX HEALTH
-  7 projects indexed but never updated: devflow, mac-download-manager,
-  dstv-channels-lineup, claude-token-display, payroll-app, ios, concord
-  → Run "update docs" after your next feature on these to start compounding savings.
-
-  GRAPH BOOST
-  No runs with code-review-graph yet. Install it to save an extra ~5k tokens
-  per update run via blast-radius analysis.
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Graph boost        : No runs with code-review-graph yet. Install it to save an extra
+                     ~5k tokens per update run via blast-radius analysis.
 ```
 
 ---
