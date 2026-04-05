@@ -28,6 +28,8 @@
 ## Cross-Repo References
 > Omitted entirely if `workspace_available = false` (no ../workspace.md found)
 
-| Call | Target Repo | Target Docs |
+| Call / Import | Target Repo | Target Docs |
 |---|---|---|
-| `[service call or import]` | `[repo name]` | `[relative path to target repo's docs/]` |
+| `[service call, import path, or HTTP endpoint]` | `[repo name]` | `[relative path to target repo's docs/]` |
+
+> **Note:** Call column captures any cross-repo reference — function call, import path, HTTP endpoint, or gRPC stub. Target Docs paths are relative to this file.

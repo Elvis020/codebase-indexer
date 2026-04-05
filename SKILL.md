@@ -13,7 +13,7 @@ Before executing any mode, check for workspace context:
 
 ```
 ../workspace.md exists?
-  ├─ yes → workspace_available = true
+  ├─ yes → workspace_available = true. Read `guides/multi-repo.md` before executing the chosen mode.
   └─ no  → workspace_available = false
 ```
 
