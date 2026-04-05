@@ -89,7 +89,7 @@ Ask: **"Did this change involve making or reversing an architectural decision?"*
 If yes — read `templates/decisions.md` for the ADR format, then:
 1. Run git log inference to populate **Why (inferred):**
    - Scope: `git log --oneline -50 -- <changed_file>` for each file touched by the decision
-   - Same quality gate as initial scan: signal words (at minimum — use judgment on related terms): fix, perf, slow, OOM, replace, migrate, because, due to, bottleneck, latency, crash, deprecated, compliance
+   - Same quality gate as initial scan: signal words (at minimum — use judgment on related terms): fix, perf, slow, OOM, replace, migrate, because, due to, bottleneck, latency, crash, deprecated, compliance, or issue/PR references (#123, fixes, closes)
    - If no signal found: set to "`— not determinable from git history`"
    - Never hallucinate a reason
 2. Append entry to `decisions.md`
