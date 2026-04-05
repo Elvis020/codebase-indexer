@@ -48,6 +48,7 @@ If the graph exists but MCP tools return an error (graph stale, server not runni
 In Step 2 (Scan the Codebase), if graph is available:
 - Use `semantic_search_nodes_tool` to find key abstractions (classes, functions, entry points) instead of broad Grep patterns.
 - Use `query_graph_tool(pattern="file_summary", target=<entry_file>)` to map what a key file exports.
+- Use `query_graph_tool(pattern="tests_for", target=<function_name>)` to populate the ## Test Coverage table in `implementation.md` — this gives exact test coverage data per function.
 - Still read manifest files and config directly — the graph covers code structure, not project metadata.
 
 ### Phase 2: Update Mode

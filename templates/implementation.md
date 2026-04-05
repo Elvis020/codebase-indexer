@@ -15,3 +15,12 @@
 | Variable / Property | Default | Purpose |
 |---|---|---|
 | `ENV_VAR` | `value` | What it controls |
+
+## Test Coverage
+> Claude-inferred — not a coverage report. Based on naming convention and import analysis.
+
+| Module / Function | Test File |
+|---|---|
+| `[module/function]` | `[test file or — no test found]` |
+
+> **Note:** One test file may appear in multiple rows when it covers multiple modules. A test file may also cover source files that don't match by name but import them directly.

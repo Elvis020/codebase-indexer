@@ -43,11 +43,24 @@ Use Glob + Grep on the changed files and their direct neighbors (same package/di
 | Changed area | Update these files |
 |---|---|
 | New module or package | `architecture.md`, `implementation.md` |
-| New class / function / endpoint | `implementation.md` |
+| New class / function / endpoint | `implementation.md` (add to ## Test Coverage) |
 | Renamed files or folders | `architecture.md`, `patterns.md` |
 | New dependency added | `architecture.md` |
 | New naming or code pattern | `patterns.md` |
 | Architectural decision | `decisions.md` (see step 5) |
+| Test file added or removed | Re-map ## Test Coverage in `implementation.md` (see below) |
+
+**Test file added or removed:**
+
+When a test file is added, removed, or modified:
+1. Read the changed test file
+2. Extract `describe`/`it` block names and import statements
+3. Match those against source modules using the priority ladder:
+   - Graph query: `query_graph_tool(pattern="tests_for", target=<fn>)`
+   - Import scan: read test file imports to identify which source modules it covers (test → source)
+4. Add new rows for newly covered functions, remove rows pointing to deleted test files
+
+> **Import scan (same mechanism, two directions):** In initial scan Step 4, Claude greps test files for imports of the source file path (source → test). In update mode, Claude reads the changed test file's imports to identify which source modules it covers (test → source). Same signal, opposite traversal direction.
 
 Apply targeted edits — do not rewrite unaffected sections.
 
@@ -78,9 +91,13 @@ Always append a new dated entry to `docs/changelog.md`:
 
 ## Step 7: Log Stats
 
-Read `guides/stats-logging.md` and append one entry to `stats/runs.jsonl`.
+Read `guides/stats-logging.md` and append one entry to `stats/runs.jsonl`, then output the inline savings card.
 
 - `mode`: `"update"`
 - `docs_generated`: count of doc files that were actually edited this run
 - `docs_skipped`: 0
+- `project_files`: reuse the approximate count from the existing `docs/` files (e.g. from `architecture.md` or `implementation.md` scope notes), or from the original scan — do not re-count the whole project
+- `tokens_saved_this_run`: `12000` if `graph_available = false`; `17000` if `graph_available = true`
+- `tokens_saved_future_est`: `0` — update runs maintain existing savings, they do not create new recurring ones
+- `cost_saved_est_usd`: `tokens_saved_this_run / 1_000_000 * 3.0` (future_est is 0 so omit it from the sum)
 - `graph_available`: `true` if `.code-review-graph/graph.db` was present and used, `false` otherwise

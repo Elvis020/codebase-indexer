@@ -46,6 +46,19 @@ Use **Glob** and **Grep** (not Bash find/ls):
 | Config files | `Glob` for `*.env*`, `*.config.*`, `application.yml`, `application.properties` |
 | External deps | Read manifest + lockfile (`package-lock.json`, `go.sum`, `pom.xml` deps) |
 | Routing / API | `Grep` for `@GetMapping`, `router.get`, `app.get`, `path=` |
+| Test files | `Glob` for `**/*.test.*`, `**/*.spec.*`, `**/__tests__/**`, `**/test/**` |
+
+**Test Discovery Matching Priority:**
+
+When mapping source modules to test files, use this priority ladder (stop at first match):
+
+1. **Graph query** — if graph is available, call `query_graph_tool(pattern="tests_for", target=<function_name>)` for each key function
+2. **Exact name match** — `auth.ts` → `auth.test.ts` or `auth.spec.ts`
+3. **Substring match** — target name contained in test filename (e.g., `UserService.ts` → `user.test.ts`)
+4. **Import scan** — grep test files for imports of the source file path (source → test)
+5. **Fallback** — mark as "`— no test found`"
+
+> **Import scan (same mechanism, two directions):** In initial scan Step 4, Claude greps test files for imports of the source file path (source → test). In update mode, Claude reads the changed test file's imports to identify which source modules it covers (test → source). Same signal, opposite traversal direction.
 
 **Exclude:** `node_modules`, `.git`, `build/`, `dist/`, `target/`, `__pycache__`
 
@@ -60,6 +73,11 @@ Write all five files under `docs/` in the project root:
 3. Read `templates/patterns.md` → write `docs/patterns.md`
 4. Read `templates/decisions.md` → write `docs/decisions.md`
 5. Read `templates/changelog.md` → write `docs/changelog.md`
+
+**When generating `implementation.md`:**
+- Populate the ## Test Coverage table using the test discovery results from Step 2
+- Map each key function/module found in the scan to its test file using the matching priority
+- Mark unmapped modules with "`— no test found`"
 
 Do not invent information — if something cannot be determined from the scan, say so explicitly.
 
