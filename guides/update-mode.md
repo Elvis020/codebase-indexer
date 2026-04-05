@@ -43,7 +43,7 @@ Use Glob + Grep on the changed files and their direct neighbors (same package/di
 | Changed area | Update these files |
 |---|---|
 | New module or package | `architecture.md`, `implementation.md` |
-| New class / function / endpoint | `implementation.md` (add to ## Test Coverage) |
+| New class / function / endpoint | `implementation.md` (run matching priority, then add to ## Test Coverage with test file or "— no test found") |
 | Renamed files or folders | `architecture.md`, `patterns.md` |
 | New dependency added | `architecture.md` |
 | New naming or code pattern | `patterns.md` |
@@ -55,9 +55,9 @@ Use Glob + Grep on the changed files and their direct neighbors (same package/di
 When a test file is added, removed, or modified:
 1. Read the changed test file
 2. Extract `describe`/`it` block names and import statements
-3. Match those against source modules using the priority ladder:
-   - Graph query: `query_graph_tool(pattern="tests_for", target=<fn>)`
+3. Match those against source modules:
    - Import scan: read test file imports to identify which source modules it covers (test → source)
+   - Describe/it block names: grep for function/class names that match source module symbols
 4. Add new rows for newly covered functions, remove rows pointing to deleted test files
 
 > **Import scan (same mechanism, two directions):** In initial scan Step 4, Claude greps test files for imports of the source file path (source → test). In update mode, Claude reads the changed test file's imports to identify which source modules it covers (test → source). Same signal, opposite traversal direction.
