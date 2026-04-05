@@ -9,6 +9,7 @@
 ## [Decision Title]
 **Date:** YYYY-MM-DD
 **Why:** [Reason this approach was chosen]
+**Why (inferred):** [Example: Commit a3f91c "fix: OOM in prod due to Hibernate lazy-load storm (#312)" — Jan 2026 performance incident drove the switch, or "— not determinable from git history"]
 **Tradeoffs:** [What was given up]
 **Alternatives considered:** [What else was evaluated]
 

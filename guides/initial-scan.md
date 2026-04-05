@@ -79,6 +79,13 @@ Write all five files under `docs/` in the project root:
 - Map each key function/module found in the scan to its test file using the matching priority
 - Mark unmapped modules with "`— no test found`"
 
+**When generating `decisions.md`:**
+- For each ADR entry, run git log inference to populate **Why (inferred):**
+- Scope: `git log --oneline -50 -- <architectural_file>` per relevant file
+- Quality gate (critical): Only infer "why" when git log contains signal words (at minimum — use judgment on related terms): fix, perf, slow, OOM, replace, migrate, because, due to, bottleneck, latency, crash, deprecated, compliance, or issue/PR references (#123, fixes, closes)
+- If no signal found: set to "`— not determinable from git history`"
+- Never hallucinate a reason — only record evidence that exists in the log
+
 Do not invent information — if something cannot be determined from the scan, say so explicitly.
 
 ## Step 4: Update .gitignore

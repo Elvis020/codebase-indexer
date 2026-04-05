@@ -76,7 +76,14 @@ Ask: **"Did this change involve making or reversing an architectural decision?"*
 | Replaced ORM after performance issues | **Yes** — e.g., "chose JOOQ over Hibernate due to N+1 problems" |
 | Added a new service module | Only if the structural choice was deliberate |
 
-If yes — read `templates/decisions.md` for the ADR format, then append entry.
+If yes — read `templates/decisions.md` for the ADR format, then:
+1. Run git log inference to populate **Why (inferred):**
+   - Scope: `git log --oneline -50 -- <changed_file>` for each file touched by the decision
+   - Same quality gate as initial scan: signal words (at minimum — use judgment on related terms): fix, perf, slow, OOM, replace, migrate, because, due to, bottleneck, latency, crash, deprecated, compliance
+   - If no signal found: set to "`— not determinable from git history`"
+   - Never hallucinate a reason
+2. Append entry to `decisions.md`
+
 If no — skip `decisions.md`.
 
 ## Step 6: Append Changelog Entry
