@@ -49,6 +49,7 @@ Use Glob + Grep on the changed files and their direct neighbors (same package/di
 | New naming or code pattern | `patterns.md` |
 | Architectural decision | `decisions.md` (see step 5) |
 | Test file added or removed | Re-map ## Test Coverage in `implementation.md` (see below) |
+| Cross-repo import or HTTP call added/removed | Refresh ## Cross-Repo References in `implementation.md` (see below) |
 
 **Test file added or removed:**
 
@@ -61,6 +62,15 @@ When a test file is added, removed, or modified:
 4. Add new rows for newly covered functions, remove rows pointing to deleted test files
 
 > **Import scan (same mechanism, two directions):** In initial scan Step 4, Claude greps test files for imports of the source file path (source → test). In update mode, Claude reads the changed test file's imports to identify which source modules it covers (test → source). Same signal, opposite traversal direction.
+
+**Cross-repo import or HTTP call changed:**
+
+When imports or HTTP client calls change to/from a workspace repo:
+1. Read `../workspace.md` to refresh registry context
+2. Re-scan the changed file to identify the new/removed cross-repo references
+3. Update ## Cross-Repo References in `implementation.md` — add new rows, remove deleted
+
+If `workspace_available = false` → skip this section entirely.
 
 Apply targeted edits — do not rewrite unaffected sections.
 

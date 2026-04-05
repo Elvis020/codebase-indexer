@@ -24,3 +24,10 @@
 | `[module/function]` | `[test file or — no test found]` |
 
 > **Note:** One test file may appear in multiple rows when it covers multiple modules. A test file may also cover source files that don't match by name but import them directly.
+
+## Cross-Repo References
+> Omitted entirely if `workspace_available = false` (no ../workspace.md found)
+
+| Call | Target Repo | Target Docs |
+|---|---|---|
+| `[service call or import]` | `[repo name]` | `[relative path to target repo's docs/]` |

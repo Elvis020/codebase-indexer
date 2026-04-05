@@ -47,6 +47,7 @@ Use **Glob** and **Grep** (not Bash find/ls):
 | External deps | Read manifest + lockfile (`package-lock.json`, `go.sum`, `pom.xml` deps) |
 | Routing / API | `Grep` for `@GetMapping`, `router.get`, `app.get`, `path=` |
 | Test files | `Glob` for `**/*.test.*`, `**/*.spec.*`, `**/__tests__/**`, `**/test/**` |
+| Cross-repo calls | Grep for imports from workspace namespace, HTTP calls to known services, gRPC stubs |
 
 **Test Discovery Matching Priority:**
 
@@ -64,6 +65,15 @@ When mapping source modules to test files, use this priority ladder (stop at fir
 
 Use patterns like `**/*.{ts,js,go,java,py,rs}` to limit scan depth.
 
+**Step 2.5: Cross-Repo Detection (if workspace_available = true)**
+
+Read `../workspace.md` to get the workspace registry. For each cross-repo call found in Step 2:
+1. Match the target against the registry (repo name or description)
+2. Record the target repo path and its docs/ location
+3. If no match found → omit from cross-repo references (don't guess)
+
+If `workspace_available = false` → skip this step entirely.
+
 ## Step 3: Generate Doc Files
 
 Write all five files under `docs/` in the project root:
@@ -78,6 +88,8 @@ Write all five files under `docs/` in the project root:
 - Populate the ## Test Coverage table using the test discovery results from Step 2
 - Map each key function/module found in the scan to its test file using the matching priority
 - Mark unmapped modules with "`— no test found`"
+- If `workspace_available = true`, populate ## Cross-Repo References from Step 2.5 results
+- If `workspace_available = false`, omit ## Cross-Repo References entirely
 
 **When generating `decisions.md`:**
 - For each ADR entry, run git log inference to populate **Why (inferred):**

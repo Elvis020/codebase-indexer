@@ -9,6 +9,16 @@ Scan a project once, write five lean doc files to `docs/`, and read them every f
 
 ## Mode Detection
 
+Before executing any mode, check for workspace context:
+
+```
+../workspace.md exists?
+  ├─ yes → workspace_available = true
+  └─ no  → workspace_available = false
+```
+
+Then detect docs presence:
+
 ```
 docs/ exists?
   ├─ yes → Signal present?
@@ -47,6 +57,7 @@ Both guides reference templates in `templates/` — read those when generating o
     update-mode.md                ← Phase 2: diff-based update steps
     gitignore-rules.md            ← .gitignore handling
     graph-integration.md          ← how to use code-review-graph MCP tools when available
+    multi-repo.md                 ← cross-repo workspace detection and lookup
     stats-logging.md              ← how to append a run entry to stats/runs.jsonl
     stats-report.md               ← how to summarize stats when user asks
   templates/
@@ -55,6 +66,7 @@ Both guides reference templates in `templates/` — read those when generating o
     patterns.md                   ← template for docs/patterns.md
     decisions.md                  ← template for docs/decisions.md
     changelog.md                  ← template for docs/changelog.md
+    workspace.md                  ← template for workspace.md registry
   stats/
     runs.jsonl                    ← append-only log of every indexer run (auto-created)
 ```
