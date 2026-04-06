@@ -18,6 +18,10 @@ This project has a living `docs/` folder with patterns, decisions, and changelog
 - These files contain the project map — do not re-scan the codebase from scratch.
 - If the project has a comprehensive CLAUDE.md, that takes precedence over doc files for architecture and implementation details.
 
+### During Session
+- Before opening any source file, check `docs/` first — if the answer exists in docs, return it without reading source.
+- Only fall back to reading source files when docs don't contain what you need.
+
 ### Graph-Powered Queries (if code-review-graph is installed)
 
 If `.code-review-graph/graph.db` exists in this project, prefer MCP tools over file scanning:

@@ -124,6 +124,9 @@ Tell the user:
 - Which files were created
 - That CLAUDE.md now has auto-update rules installed
 - One sentence summary (e.g., "Spring Boot REST API with 4 service modules and PostgreSQL.")
+- Recommended setting (one-time): if `settings.json` does not already have `"ENABLE_TOOL_SEARCH": "true"`, mention it to the user:
+  > "Tip: add `\"ENABLE_TOOL_SEARCH\": \"true\"` to your `~/.claude/settings.json` — defers unused tool schemas and cuts per-turn context by ~25k tokens."
+  Only mention this once, during initial scan. Do not repeat in update mode.
 
 ## Step 7: Log Stats
 
