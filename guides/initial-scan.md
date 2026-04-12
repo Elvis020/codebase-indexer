@@ -36,7 +36,13 @@ Multiple manifests = polyglot/monorepo — note all detected stacks.
 
 ## Step 2: Scan the Codebase
 
-Use **Glob** and **Grep** (not Bash find/ls):
+Use **signal-first extraction** from `guides/signal-first-ir.md`:
+
+1. Generate a structure-first view (L0-equivalent) for broad file coverage
+2. Generate a behavior view (L1-equivalent) for entry points, core modules, and hotspots
+3. Fall back to targeted Glob/Grep/Read only when details are not determinable from the structured view
+
+Then use **Glob** and **Grep** (not Bash find/ls) to fill any remaining gaps:
 
 | What to find | How |
 |---|---|
@@ -47,6 +53,8 @@ Use **Glob** and **Grep** (not Bash find/ls):
 | External deps | Read manifest + lockfile (`package-lock.json`, `go.sum`, `pom.xml` deps) |
 | Routing / API | `Grep` for `@GetMapping`, `router.get`, `app.get`, `path=` |
 | Test files | `Glob` for `**/*.test.*`, `**/*.spec.*`, `**/__tests__/**`, `**/test/**` |
+
+Apply the four-tier model from `guides/signal-first-ir.md` to all extracted content. If details matter for docs correctness (e.g., dependency names, endpoint paths), read the exact source line before writing docs.
 
 **Test Discovery Matching Priority:**
 
@@ -63,6 +71,20 @@ When mapping source modules to test files, use this priority ladder (stop at fir
 **Exclude:** `node_modules`, `.git`, `build/`, `dist/`, `target/`, `__pycache__`
 
 Use patterns like `**/*.{ts,js,go,java,py,rs}` to limit scan depth.
+
+**Budget-aware packing (large or polyglot projects):**
+
+When project size is large or polyglot:
+1. Prioritize detailed extraction (L1-equivalent) for: entry points, externally facing modules, and high-change files
+2. Use structure-only extraction (L0-equivalent) for peripheral modules
+3. Keep total context bounded; do not let one large file starve coverage of the rest of the project
+4. If one target file requires exact code, read raw source only for that target and keep surrounding context in compact form
+
+Optional helper — suggest this command to the user (do not run autonomously):
+```bash
+python3 ~/.claude/skills/codebase-indexer/scripts/context_packer.py --root . --budget 4000
+```
+Use the JSON output to decide which files get detailed review (L1) versus structure-only (L0) before writing docs.
 
 **Step 2.5: Cross-Repo Detection (if workspace_available = true)**
 

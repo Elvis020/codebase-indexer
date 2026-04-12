@@ -36,7 +36,22 @@ This replaces the entire Glob/Grep neighborhood scan and costs ~300 tokens vs. 2
 
 **If `graph_available = false`:**
 
-Use Glob + Grep on the changed files and their direct neighbors (same package/directory). Do **not** re-scan the whole project.
+Use signal-first extraction from `guides/signal-first-ir.md` on changed files. Before editing docs, build a compact delta context for each changed file:
+1. File path
+2. Changed lines/behaviors
+3. Nearby control-flow context
+4. Impacted functions/modules
+
+Drive doc edits from this delta context. Only read exact raw source when the delta is insufficient to determine a factual doc update.
+
+Optional helper — suggest these commands to the user (do not run autonomously):
+```bash
+python3 ~/.claude/skills/codebase-indexer/scripts/delta_context.py --repo . --files <changed-file-1> <changed-file-2>
+```
+or from a diff pipe:
+```bash
+git diff -- <changed-file> | python3 ~/.claude/skills/codebase-indexer/scripts/delta_context.py
+```
 
 ## Step 4: Update Relevant Doc Files
 
@@ -47,6 +62,7 @@ Use Glob + Grep on the changed files and their direct neighbors (same package/di
 | Renamed files or folders | `architecture.md`, `patterns.md` |
 | New dependency added | `architecture.md` |
 | New naming or code pattern | `patterns.md` |
+| Security-sensitive finding (secret/debug artifact/risky pattern) | `changelog.md` and optionally `decisions.md` if architectural |
 | Architectural decision | `decisions.md` (see step 5) |
 | Test file added or removed | Re-map ## Test Coverage in `implementation.md` (see below) |
 | Cross-repo import or HTTP call added/removed | Refresh ## Cross-Repo References in `implementation.md` (see below) |
@@ -73,6 +89,17 @@ When imports or HTTP client calls change to/from a workspace repo:
 If `workspace_available = false` → skip this section entirely.
 
 Apply targeted edits — do not rewrite unaffected sections.
+
+**Budget-aware update packing (critical):**
+- Detailed context for changed files and direct dependents
+- Structure-only context for unaffected modules
+- Prefer high-risk/high-churn modules when budget is tight
+- Keep updates deterministic: the same diff should produce the same doc edit scope
+
+Optional helper — suggest to the user (do not run autonomously):
+```bash
+python3 ~/.claude/skills/codebase-indexer/scripts/context_packer.py --root . --budget 3000 --changed <csv-paths>
+```
 
 ## Step 5: Decisions Gate
 
