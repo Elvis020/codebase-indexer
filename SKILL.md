@@ -33,6 +33,10 @@ docs/ exists?
 - If present → `graph_available = true`. Read `guides/graph-integration.md` before executing the chosen mode.
 - If absent → `graph_available = false`. Proceed with Glob/Grep as normal.
 
+**In all modes (signal-first):** Read `guides/signal-first-ir.md` and prefer AST-first, tiered summaries for code understanding.
+- If AST/IR extraction is feasible in the current environment → use it for structure/control-flow extraction before raw file reads.
+- If AST/IR extraction is not feasible → emulate the same tiers with focused Grep/Read and continue.
+
 **Phase 2 signals:** user says "update docs", "re-index", "update", or just finished a feature/bugfix.
 
 **Comprehensive CLAUDE.md:** A CLAUDE.md that already documents architecture, directory structure, key abstractions, and conventions. Read it and judge — if it covers what `architecture.md` and `implementation.md` would contain, use Supplement Mode.
@@ -55,6 +59,7 @@ Both guides reference templates in `templates/` — read those when generating o
   guides/
     initial-scan.md               ← Phase 1: full scan steps
     update-mode.md                ← Phase 2: diff-based update steps
+    signal-first-ir.md            ← AST-first/tiered extraction + budgeted context packing
     gitignore-rules.md            ← .gitignore handling
     graph-integration.md          ← how to use code-review-graph MCP tools when available
     multi-repo.md                 ← cross-repo workspace detection and lookup
@@ -67,6 +72,9 @@ Both guides reference templates in `templates/` — read those when generating o
     decisions.md                  ← template for docs/decisions.md
     changelog.md                  ← template for docs/changelog.md
     workspace.md                  ← template for workspace.md registry
+  scripts/
+    context_packer.py             ← deterministic L0/L1/L3 budget-aware context packing
+    delta_context.py              ← deterministic L2-style diff summarization
   stats/
     runs.jsonl                    ← append-only log of every indexer run (auto-created)
 ```
@@ -82,6 +90,8 @@ Both guides reference templates in `templates/` — read those when generating o
 | Gitignoring `docs/` without asking the user | Ask: shared (committed) or local-only (gitignored)? |
 | Using `git diff HEAD~1` on merge or squash commits | Use `git diff --name-only $(git merge-base HEAD HEAD~1)..HEAD` |
 | Re-scanning the full codebase in Update Mode | If graph available, use `get_impact_radius_tool`; else scope to changed files and direct neighbors |
+| Reading raw source for every file in initial scan | Use signal-first IR/tiered extraction first; only drill into raw code for unresolved ambiguity |
+| Sending equal detail for all files in update mode | Use budget-aware packing: changed/hotspot files detailed, others structure-only |
 | Duplicating `.gitignore` entry | Always read first, append only if absent |
 | Rewriting whole doc files on update | Edit only the sections corresponding to changed modules |
 | Adding ADR for every change | Gate on "was this an architectural decision?" — most changes are not |

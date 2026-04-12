@@ -2,6 +2,21 @@
 
 A Claude Code skill that scans a project once and generates a living `/docs/` folder — so Claude reads the index instead of re-scanning the whole codebase every session.
 
+This project borrows the shape of a few strong ideas, especially Composto's AST-first compression mindset and tree-sitter's structured approach to code understanding. The implementation here adapts those ideas natively inside Claude Code rather than depending on Composto or tree-sitter at runtime.
+
+## Acknowledgments
+
+- [Composto](https://github.com/mertcanaltin/composto) — inspiration for tiered signal extraction, context budgeting, and health/security-aware context design.
+- [tree-sitter](https://tree-sitter.github.io/tree-sitter/) — parsing model and language-grammar ecosystem that informed the AST-first direction.
+
+## Evolution
+
+- **Initial state:** a one-shot codebase indexer that produced a durable `/docs/` scaffold from a single scan.
+- **Next:** auto-update rules were added so Claude could keep the index current without repeated manual runs.
+- **Then:** changelog and decision tracking were layered in to preserve context across sessions.
+- **Then:** graph-aware blast radius support was added to make update mode more targeted.
+- **Now:** a signal-first, AST-inspired workflow (tiered extraction + budget-aware context packing) guides scans and updates while remaining self-contained.
+
 ## What it does
 
 **First run:** Scans your project, writes five doc files, and installs auto-update rules in your project's `CLAUDE.md`:
@@ -45,11 +60,15 @@ Detects and handles: Node.js, Java (Maven/Gradle), Go, Python, Rust, .NET, PHP �
 ```
 First run (invoke once)              Every session after (automatic)
 ───────────────────────              ───────────────────────────────
-Scan codebase (Glob + Grep)    →     Claude reads docs/ at session start
+Scan codebase (signal-first)   →     Claude reads docs/ at session start
 Generate 5 doc files           →     No re-scan needed
 Install rules in CLAUDE.md     →     Auto-updates docs after changes
 Add docs/ to .gitignore        →     Appends changelog entries
 ```
+
+Optional deterministic helpers (inside this repo):
+- `scripts/context_packer.py` — budget-aware L0/L1/L3 context packing
+- `scripts/delta_context.py` — L2-style diff summarization for update mode
 
 ## Skill structure
 
@@ -59,7 +78,11 @@ Add docs/ to .gitignore        →     Appends changelog entries
   guides/
     initial-scan.md         ← Phase 1: full scan steps
     update-mode.md          ← Phase 2: diff-based updates
+    signal-first-ir.md      ← AST-inspired signal-first extraction rules
     gitignore-rules.md      ← .gitignore handling
+  scripts/
+    context_packer.py       ← deterministic context packing helper
+    delta_context.py        ← deterministic delta summarization helper
   templates/
     architecture.md         ← template for each doc file
     implementation.md
