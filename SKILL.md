@@ -99,3 +99,4 @@ Both guides reference templates in `templates/` — read those when generating o
 | Using a flat `tokens_saved_est` number regardless of project size | Use `tokens_saved_future_est` scaled by `project_files` per the table in stats-logging.md |
 | Inventing details not found in scan | Say "not determinable from scan" rather than guessing |
 | Updating docs after every small change | Update at natural checkpoints — before commit, before PR, or when explicitly asked |
+| Running `scripts/context_packer.py` or `scripts/delta_context.py` autonomously | Suggest the command to the user — do not run shell scripts without being asked |

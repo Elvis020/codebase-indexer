@@ -83,22 +83,22 @@ Uses Sonnet input token rate (~$3/1M). Round to 4 decimal places.
 
 ## Inline savings card (required after every run)
 
-After logging, output this stacked key/value block to the user:
+After logging, output a `concord-index-summary` JSON block. The Concord UI renders this as a formatted key-value table automatically. Do NOT output a plain-text card — the structured block replaces it.
 
-```
-Codebase Indexer · Run Complete
-Project            : <project>
-Mode               : <mode>
-Files (approx)     : ~<project_files>
-This run           : <tokens_saved_this_run> tokens saved
-Future per session : ~<tokens_saved_future_est> tokens/session
-Est. cost saved    : ~$<cost_saved_est_usd>
-```
+Output exactly this (fill in values, no extra text around the block):
 
-For `full` mode where `tokens_saved_this_run` is 0, replace that line with:
-```
-This run           : baseline (first index - future sessions benefit)
-```
+\`\`\`concord-index-summary
+{"project":"<project>","mode":"<mode>","project_files":<project_files>,"docs_generated":<docs_generated>,"tokens_saved_this_run":<tokens_saved_this_run>,"tokens_saved_future_est":<tokens_saved_future_est>,"cost_saved_est_usd":<cost_saved_est_usd>}
+\`\`\`
+
+For `full` mode, set `tokens_saved_this_run` to `0` (baseline — future sessions benefit).
+For `update` mode, set `tokens_saved_future_est` to `0`.
+
+Example for a full-mode run on a medium project:
+
+\`\`\`concord-index-summary
+{"project":"concord","mode":"full","project_files":87,"docs_generated":5,"tokens_saved_this_run":0,"tokens_saved_future_est":20000,"cost_saved_est_usd":0.06}
+\`\`\`
 
 ---
 

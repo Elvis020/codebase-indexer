@@ -31,7 +31,7 @@ This project borrows the shape of a few strong ideas, especially Composto's AST-
 
 **After the first run, you never invoke the skill again.** The rules in `CLAUDE.md` make Claude automatically read the docs at session start and update them after every feature or bugfix.
 
-`docs/` is added to `.gitignore` automatically — these are session artifacts, not committed documentation.
+On first run, you'll be asked whether `docs/` should be committed (shared with the team) or gitignored (local only).
 
 ## Install
 

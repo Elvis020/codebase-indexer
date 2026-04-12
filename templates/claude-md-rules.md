@@ -14,7 +14,7 @@ These rules are injected into the project's CLAUDE.md by the codebase-indexer sk
 This project has a living `docs/` folder with patterns, decisions, and changelog files.
 
 ### Session Start
-- Read `docs/architecture.md` and `docs/implementation.md` if they exist before doing any work.
+- Read `docs/architecture.md`, `docs/implementation.md`, and `docs/patterns.md` if they exist before doing any work.
 - These files contain the project map — do not re-scan the codebase from scratch.
 - If the project has a comprehensive CLAUDE.md, that takes precedence over doc files for architecture and implementation details.
 
@@ -48,6 +48,9 @@ Once you know what changed, apply targeted edits to the relevant doc files:
 - Renamed files/folders → update `docs/architecture.md`, `docs/patterns.md`
 - New dependency → update `docs/architecture.md` (if it exists)
 - New naming/code pattern → update `docs/patterns.md`
+- Test file added, removed, or modified → re-map `## Test Coverage` in `docs/implementation.md` (read the test file's imports to identify which source modules it covers)
+- Cross-repo import or HTTP client call added/removed → refresh `## Cross-Repo References` in `docs/implementation.md` (only if `../workspace.md` exists)
+- Hardcoded secrets, debug artifacts (`console.log`, `debugger`, `TODO: remove`), or high-churn signals found → note in `docs/changelog.md` under today's date
 
 Then:
 1. Ask: "Did this change involve making or reversing an architectural decision?"
