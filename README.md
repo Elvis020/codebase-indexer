@@ -51,6 +51,14 @@ That's it. After the first scan, Claude handles everything automatically via the
 
 You can also say **"update docs"** / **"re-index"** if you want to manually trigger an update.
 
+Savings visibility (current project):
+- **"/codebase-indexer savings"** — terminal comparison report
+- **"/codebase-indexer savings terminal"** — explicit terminal mode
+- **"/codebase-indexer savings html"** — generates a timestamped report in `docs/` (`codebase-indexer-savings-YYYYMMDD-HHMMSS.html`)
+- After every successful `/codebase-indexer` run, savings are generated automatically by default:
+  - terminal comparison shown immediately
+  - new timestamped HTML report written to `docs/` (e.g., `codebase-indexer-savings-YYYYMMDD-HHMMSS.html`)
+
 ## Supported project types
 
 Detects and handles: Node.js, Java (Maven/Gradle), Go, Python, Rust, .NET, PHP — and polyglot/monorepo setups.

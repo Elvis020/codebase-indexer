@@ -145,3 +145,23 @@ Read `guides/stats-logging.md` and append one entry to `stats/runs.jsonl`, then 
 - `tokens_saved_future_est`: `0` — update runs maintain existing savings, they do not create new recurring ones
 - `cost_saved_est_usd`: `tokens_saved_this_run / 1_000_000 * 3.0` (future_est is 0 so omit it from the sum)
 - `graph_available`: `true` if `.code-review-graph/graph.db` was present and used, `false` otherwise
+- `project_root`: absolute project root path
+- `tokens_raw_baseline_est`: computed from update baseline table in stats-logging guide
+- `tokens_indexer_run_est`: `max(0, tokens_raw_baseline_est - tokens_saved_this_run)`
+- `measurement_quality`: `"estimated"` unless exact telemetry is available
+
+Also append the same entry to `<project-root>/.codebase-indexer/savings.jsonl` for project-local savings reports.
+
+## Step 8: Always Generate Savings Reports (Required)
+
+At the end of every successful update run, generate savings outputs by default:
+1. Print project-local terminal savings comparison
+2. Create a new timestamped HTML report under `docs/`
+
+Run:
+
+```bash
+python3 ~/.claude/skills/codebase-indexer/scripts/savings_report.py --project-root . --format both --output docs/codebase-indexer-savings.html --timestamp-html yes
+```
+
+This must run for every successful indexer update; do not make it optional.

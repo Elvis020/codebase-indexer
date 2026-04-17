@@ -162,3 +162,23 @@ Read `guides/stats-logging.md` and append one entry to `stats/runs.jsonl`, then 
 - `tokens_saved_future_est`: use the project_files scale table in stats-logging.md for full; `35000` for supplement
 - `cost_saved_est_usd`: `(tokens_saved_this_run + tokens_saved_future_est) / 1_000_000 * 3.0`
 - `graph_available`: `true` if `.code-review-graph/graph.db` was present
+- `project_root`: absolute project root path
+- `tokens_raw_baseline_est`: computed from project size table in stats-logging guide
+- `tokens_indexer_run_est`: `max(0, tokens_raw_baseline_est - tokens_saved_this_run)`
+- `measurement_quality`: `"estimated"` unless exact telemetry is available
+
+Also append the same entry to `<project-root>/.codebase-indexer/savings.jsonl` for project-local savings reports.
+
+## Step 8: Always Generate Savings Reports (Required)
+
+At the end of every successful indexing run, generate savings outputs by default:
+1. Print project-local terminal savings comparison
+2. Create a new timestamped HTML report under `docs/`
+
+Run:
+
+```bash
+python3 ~/.claude/skills/codebase-indexer/scripts/savings_report.py --project-root . --format both --output docs/codebase-indexer-savings.html --timestamp-html yes
+```
+
+This must run for every successful indexer run; do not make it optional.

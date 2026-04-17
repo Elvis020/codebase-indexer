@@ -29,6 +29,14 @@ docs/ exists?
              └─ no  → Phase 1: Initial Indexing (all 5 docs)
 ```
 
+Before entering indexing/update modes, check savings-report intent:
+
+```
+User asks "/codebase-indexer savings" (or "show savings")?
+  ├─ yes → Savings Mode (project-local report, no indexing)
+  └─ no  → continue mode detection below
+```
+
 **In all modes:** Check for `.code-review-graph/graph.db` in the project root.
 - If present → `graph_available = true`. Read `guides/graph-integration.md` before executing the chosen mode.
 - If absent → `graph_available = false`. Proceed with Glob/Grep as normal.
@@ -45,6 +53,7 @@ docs/ exists?
 
 | Mode | Read this guide |
 |------|----------------|
+| Savings report request | Read `guides/stats-report.md` and generate project-local terminal or HTML comparison |
 | No `docs/`, no comprehensive CLAUDE.md | Read `guides/initial-scan.md` — generate all 5 docs |
 | No `docs/`, comprehensive CLAUDE.md exists | Read `guides/initial-scan.md` Step 0 — generate gap docs only (`patterns.md`, `decisions.md`, `changelog.md`) |
 | `docs/` exists, update after changes | Read `guides/update-mode.md` and follow it |
@@ -75,11 +84,12 @@ Both guides reference templates in `templates/` — read those when generating o
   scripts/
     context_packer.py             ← deterministic L0/L1/L3 budget-aware context packing
     delta_context.py              ← deterministic L2-style diff summarization
+    savings_report.py             ← project-local savings report generator (terminal or HTML)
   stats/
     runs.jsonl                    ← append-only log of every indexer run (auto-created)
 ```
 
-**Stats:** After every run, a line is appended to `stats/runs.jsonl` and an inline savings card is shown to the user immediately. To see the full report, say "show codebase-indexer stats" — Claude will read `guides/stats-report.md` and render the full Token Intelligence report.
+**Stats and Savings (always-on):** After every successful run, append entries to global/project-local logs, print a terminal savings comparison, and generate a new timestamped HTML savings report in `docs/`. Savings reporting is required at end-of-run, not optional.
 
 ## Common Mistakes
 
@@ -100,3 +110,4 @@ Both guides reference templates in `templates/` — read those when generating o
 | Inventing details not found in scan | Say "not determinable from scan" rather than guessing |
 | Updating docs after every small change | Update at natural checkpoints — before commit, before PR, or when explicitly asked |
 | Running `scripts/context_packer.py` or `scripts/delta_context.py` autonomously | Suggest the command to the user — do not run shell scripts without being asked |
+| Treating savings reporting as optional | Always run end-of-run savings generation (terminal + timestamped HTML) after successful indexing/update |
