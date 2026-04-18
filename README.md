@@ -4,6 +4,91 @@ A Claude Code skill that scans a project once and generates a living `.codebase-
 
 This project borrows the shape of a few strong ideas, especially Composto's AST-first compression mindset and tree-sitter's structured approach to code understanding. The implementation here adapts those ideas natively inside Claude Code rather than depending on Composto or tree-sitter at runtime.
 
+## What Is Different In This Fork
+
+Compared to the parent repository, this fork adds a query-first retrieval layer and stronger indexing guidance for large/complex repos.
+
+| Area | Upstream Style | This Fork |
+|---|---|---|
+| Retrieval flow | Glob/Grep-first scans | Prompt-driven retrieval (`scripts/query_context.py`) before packing |
+| Context shaping | Docs-only compression | Tiered L0/L1/L2/L3 packing + delta summarization |
+| Update scope | Changed files | Changed files + depth-1 dependents when graph is unavailable |
+| Architecture indexing | General module map | Explicit execution entry map + multi-layer artifacts (`sql`, `prisma`, `openapi`, `docker-compose`) |
+| Hidden dependency signals | Not emphasized | Git co-change coupling report (`scripts/coupling_report.py`) |
+| Savings proof | Basic estimation | Project-local savings logs + measured A/B benchmark mode |
+
+## Architecture Flow (Local-Only)
+
+```mermaid
+flowchart LR
+    U["User Request"] --> A["Indexer Skill"]
+    A --> Q["Query Retrieval (query_context.py)"]
+    Q --> L["Local Search (filesystem + lexical ranking)"]
+    L --> K["Top-K Relevant Files"]
+    K --> P["Context Packing (context_packer.py, L0/L1/L3)"]
+    A --> D["Delta Summaries (delta_context.py, L2 updates)"]
+    D --> P
+    P --> M["LLM Reasoning"]
+    M --> O["Docs + Changelog Updates"]
+    O --> S["Savings + Benchmark Reporting"]
+
+    classDef input fill:#E6F4FF,stroke:#0B6BCB,color:#0A2F57,stroke-width:2px;
+    classDef retrieve fill:#E9FFF3,stroke:#1B8F4D,color:#0D4D2A,stroke-width:2px;
+    classDef process fill:#FFF6E8,stroke:#C77A12,color:#5B3A0A,stroke-width:2px;
+    classDef output fill:#F4ECFF,stroke:#7B4DB9,color:#3E2266,stroke-width:2px;
+
+    class U input;
+    class A,Q,L,K retrieve;
+    class D,P,M process;
+    class O,S output;
+```
+
+Plain-text fallback:
+
+```text
+User request -> query retrieval -> local search ranking -> top-K files ->
+budgeted context packing (+ delta summaries in update mode) -> LLM ->
+doc updates -> savings/benchmark reports
+```
+
+## Request Lifecycle (Color Diagram)
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant I as Indexer
+    participant R as Retrieval
+    participant P as Packer
+    participant L as LLM
+    participant D as Docs/Stats
+
+    U->>I: Ask feature/question
+    I->>R: Send natural-language query
+    R->>R: Rank candidate files
+    R-->>P: Top-K files
+    I->>P: Add delta context (update mode)
+    P-->>L: Budgeted L0/L1/L2/L3 payload
+    L-->>I: Answer + inferred changes
+    I->>D: Update docs + savings logs
+    I-->>U: Final response
+```
+
+## Visual Demo GIFs
+
+Drop GIF files into `assets/gifs/` with these names and they will render in the README.
+
+### 1) Initial Index Run
+![Initial index run](assets/gifs/initial-index-run.gif)
+
+### 2) Update Mode After Code Change
+![Update mode run](assets/gifs/update-mode-run.gif)
+
+### 3) Query-Driven Retrieval + Packing
+![Query retrieval run](assets/gifs/query-retrieval-run.gif)
+
+### 4) Savings + Benchmark Output
+![Savings benchmark run](assets/gifs/savings-benchmark-run.gif)
+
 ## Acknowledgments
 
 - [heyEdem](https://github.com/heyEdem) — initial contributor; this project was started from a fork of their codebase-indexer repository.
@@ -43,7 +128,7 @@ On first run, you'll be asked whether `.codebase-indexer/` should be committed (
 ## Install
 
 ```bash
-git clone https://github.com/heyEdem/codebase-indexer.git ~/.claude/skills/codebase-indexer
+git clone https://github.com/Elvis020/codebase-indexer.git ~/.claude/skills/codebase-indexer
 ```
 
 Claude Code will discover the skill automatically on next launch.
@@ -81,7 +166,7 @@ Detects and handles: Node.js, Java (Maven/Gradle), Go, Python, Rust, .NET, PHP �
 ```
 First run (invoke once)              Every session after (automatic)
 ───────────────────────              ───────────────────────────────
-Scan codebase (signal-first)   →     Claude reads .codebase-indexer/docs/ at session start
+Query + scan codebase (signal-first) → Claude reads .codebase-indexer/docs/ at session start
 Generate 5 doc files           →     No re-scan needed
 Install rules in CLAUDE.md     →     Auto-updates docs after changes
 Add .codebase-indexer/ to .gitignore        →     Appends changelog entries
