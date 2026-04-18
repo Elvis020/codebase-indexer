@@ -53,8 +53,35 @@ Then use **Glob** and **Grep** (not Bash find/ls) to fill any remaining gaps:
 | External deps | Read manifest + lockfile (`package-lock.json`, `go.sum`, `pom.xml` deps) |
 | Routing / API | `Grep` for `@GetMapping`, `router.get`, `app.get`, `path=` |
 | Test files | `Glob` for `**/*.test.*`, `**/*.spec.*`, `**/__tests__/**`, `**/test/**` |
+| Multi-layer artifacts | `Glob` for `**/*.sql`, `**/schema.prisma`, `**/openapi*.{yaml,yml,json}`, `**/docker-compose*.{yaml,yml}` |
 
 Apply the four-tier model from `guides/signal-first-ir.md` to all extracted content. If details matter for docs correctness (e.g., dependency names, endpoint paths), read the exact source line before writing docs.
+
+**Execution Entry Map (required):**
+
+Build a compact map of executable entry points and public ingress points for `architecture.md`.
+Search for stack-specific bootstrap markers, including:
+- `main(`, `if __name__ == "__main__":`, `app.listen(`, `server.listen(`
+- `@app.route`, `@router.get`, `@router.post`, `router.get(`, `router.post(`
+- `@GetMapping`, `@PostMapping`, `@RequestMapping`, `public static void main`
+- `export default function` for framework entry handlers
+
+For each confirmed entry point, capture:
+1. Path + symbol
+2. Entry type (`CLI`, `HTTP`, `Worker`, `Scheduler`, or `Unknown`)
+3. One-line note describing role
+
+Only include entries confirmed from source; do not infer missing handlers.
+
+**Multi-layer context artifacts (required):**
+
+Capture non-code artifacts that shape behavior:
+1. Database schema: `*.sql`, `schema.prisma`
+2. API contracts: `openapi*.yaml|yml|json`
+3. Runtime topology: `docker-compose*.yaml|yml`
+
+Record these in `architecture.md` under "Multi-Layer Context Artifacts" with location and why they matter.
+If absent, write "`— not found in scan`" for that artifact class.
 
 **Test Discovery Matching Priority:**
 

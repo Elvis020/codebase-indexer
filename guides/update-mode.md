@@ -44,6 +44,13 @@ Use signal-first extraction from `guides/signal-first-ir.md` on changed files. B
 
 Drive doc edits from this delta context. Only read exact raw source when the delta is insufficient to determine a factual doc update.
 
+Then perform a depth-1 impact expansion (no graph tooling required):
+1. For each changed source file `X`, identify likely importers/dependents using focused grep (module path, exported symbol names, package import aliases)
+2. Add those files as "depth-1 affected" candidates
+3. Review only their structure-level context (L0/L1); do not deep-read all transitive neighbors
+
+Use this depth-1 set to avoid stale docs when direct consumers changed implicitly.
+
 Optional helper — suggest these commands to the user (do not run autonomously):
 ```bash
 python3 ~/.claude/skills/codebase-indexer/scripts/delta_context.py --repo . --files <changed-file-1> <changed-file-2>
@@ -66,6 +73,8 @@ git diff -- <changed-file> | python3 ~/.claude/skills/codebase-indexer/scripts/d
 | Architectural decision | `decisions.md` (see step 5) |
 | Test file added or removed | Re-map ## Test Coverage in `implementation.md` (see below) |
 | Cross-repo import or HTTP call added/removed | Refresh ## Cross-Repo References in `implementation.md` (see below) |
+| Changed entry points (startup/router handlers) | Refresh ## Execution Entry Map in `architecture.md` |
+| Changed schema/spec/deploy artifacts (`sql`, `prisma`, `openapi`, `docker-compose`) | Refresh ## Multi-Layer Context Artifacts in `architecture.md` |
 
 **Test file added or removed:**
 
@@ -91,7 +100,7 @@ If `workspace_available = false` → skip this section entirely.
 Apply targeted edits — do not rewrite unaffected sections.
 
 **Budget-aware update packing (critical):**
-- Detailed context for changed files and direct dependents
+- Detailed context for changed files and depth-1 dependents
 - Structure-only context for unaffected modules
 - Prefer high-risk/high-churn modules when budget is tight
 - Keep updates deterministic: the same diff should produce the same doc edit scope
