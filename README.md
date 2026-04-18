@@ -1,154 +1,174 @@
-<div align="center">
+# <span style="color:#6366F1">⟁</span> codebase-indexer
 
-# codebase-indexer
+<h3 style="color:#6366F1; font-weight: 400; margin-top: 0;">Give your AI a photographic memory for your codebase</h3>
 
-**A Claude Code skill that scans your project once and builds a living index — so Claude reads summaries instead of re-scanning source files every session.**
-
-[![Claude Code](https://img.shields.io/badge/Claude%20Code-skill-5A67D8?logo=anthropic&logoColor=white)](https://claude.ai/code)
-[![Python](https://img.shields.io/badge/Python-3.9%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-22C55E.svg)](LICENSE)
-[![Maintained](https://img.shields.io/badge/status-actively%20maintained-brightgreen)](https://github.com/Elvis020/codebase-indexer/commits/main)
-
-</div>
-
----
-
-## The Problem
-
-Every time you open a codebase with Claude, it re-reads dozens of files to orient itself. For a medium project (200 files) that is ~30,000 tokens of context burned before you have typed a single question. For a large project (1,000+ files) it is closer to 160,000 tokens.
-
-**And it happens every single session.**
-
-## The Solution
-
-Run `/codebase-indexer` once. It generates five lean index files in `.codebase-indexer/docs/`. From then on, Claude reads the index (~800–4,000 tokens) instead of raw source (8,000–160,000 tokens). Docs stay current automatically — Claude updates only the changed sections after each commit.
-
-**Estimated savings per future session** (heuristic, by project size):
-
-| Project size | Files | Tokens saved / session | At $3/M tokens |
-|---|---|---|---|
-| Small | < 50 | ~8,000 | ~$0.024 |
-| Medium | 50–200 | ~20,000 | ~$0.060 |
-| Large | 200–1,000 | ~45,000 | ~$0.135 |
-| XL | 1,000+ | ~90,000 | ~$0.270 |
-
-> Savings figures are heuristic estimates based on project-file-count buckets. Run `/codebase-indexer benchmark` to get exact byte-counted measurements for your project.
+<p align="center">
+  <a href="https://github.com/Elvis020/codebase-indexer/stargazers">
+    <img src="https://img.shields.io/github/stars/Elvis020/codebase-indexer?style=for-the-badge&logo=github&color=#6366F1" alt="Stars">
+  </a>
+  <a href="https://img.shields.io/badge/Python-3.9+-3776AB?logo=python&logoColor=white">
+    <img src="https://img.shields.io/badge/Python-3.9%2B-3776AB?logo=python&logoColor=white" alt="Python">
+  </a>
+  <a href="LICENSE">
+    <img src="https://img.shields.io/badge/License-MIT-22C55E.svg" alt="License">
+  </a>
+  <img src="https://img.shields.io/badge/AI%20Agents-any%20agent-EC4899?logo=robot&logoColor=white" alt="AI Agents">
+</p>
 
 ---
 
-## Quick Start
+## <span style="color:#F59E0B">🔥</span> The Problem Nobody Talks About
+
+Every time your AI opens a codebase, it plays a game of "Reader's Digest" — scanning **thousands of lines of code** just to understand what your project does.
+
+For a **medium project** (200 files): ~30,000 tokens burned before you've typed a single question.
+For a **large project** (1,000+ files): ~160,000 tokens. That's roughly **80 pages of text**.
+
+**And it happens. Every. Single. Session.**
+
+It's like hiring a new developer who needs to re-read your entire codebase every morning. At some point, you'd just... stop hiring.
+
+---
+
+## <span style="color:#10B981">✨</span> The Solution: A Living Index
+
+Run `/codebase-indexer` once. It builds a lean, mean documentation machine — five markdown files that capture your entire codebase's soul.
+
+From then on? Your AI reads the index (~800–4,000 tokens) instead of your raw source (8,000–160,000 tokens). Docs stay fresh automatically — they update after each commit like self-cleaning windows.
+
+> 🧠 **Think of it as giving your AI a photographic memory.** Once indexed, never forget.
+
+### 💰 Savings At A Glance
+
+| Project Size | Files | Tokens Saved/Session | At $3/M tokens |
+|:---:|:---:|:---:|:---:|
+| 🐣 Small | < 50 | ~8,000 | ~$0.024 |
+| 🐥 Medium | 50–200 | ~20,000 | ~$0.060 |
+| 🐓 Large | 200–1,000 | ~45,000 | ~$0.135 |
+| 🦅 XL | 1,000+ | ~90,000 | ~$0.270 |
+
+---
+
+## <span style="color:#8B5CF6">🚀</span> Quick Start
 
 ```bash
-# Install (once, globally)
+# Install (once, globally — works with ANY AI agent)
 git clone https://github.com/Elvis020/codebase-indexer.git ~/.claude/skills/codebase-indexer
+
+# Or for other AI agents, just clone and reference the SKILL.md
+git clone https://github.com/Elvis020/codebase-indexer.git /path/to/your-preferred-location
 ```
 
-Then open **any project** in Claude Code and say:
+Then, in **any AI agent** (Claude, Cursor, Copilot, custom agents — you name it), say:
 
 ```
 index this codebase
 ```
 
-That is it. The indexer scans, writes five docs, installs auto-update rules into your project's `CLAUDE.md`, and logs a savings baseline. Every future session starts from the index.
+That's it. The indexer scans, writes five docs, plants auto-update rules, and logs your savings baseline. Every future session starts from the index.
+
+> **Works with:** Claude Code, Cursor, GitHub Copilot, Devin, any custom AI agent, or even your own LLM setup. If it can run Python and read files, it can use this.
 
 ---
 
-## What It Generates
+## <span style="color:#06B6D4">📦</span> What It Generates
 
-Five markdown files written to `.codebase-indexer/docs/`:
+Five markdown files in `.codebase-indexer/docs/`:
 
-| File | What it captures |
-|---|---|
-| `architecture.md` | Module structure, data flow, execution entry points, external dependencies, multi-layer artifacts (SQL, Prisma, OpenAPI, docker-compose) |
-| `implementation.md` | Per-module breakdown — key classes, functions, test coverage map |
-| `patterns.md` | Naming conventions, folder conventions, recurring idioms, git coupling signals |
-| `decisions.md` | ADRs — stated reason (`Why:`) plus git-inferred evidence (`Why (inferred):`) from commit history |
-| `changelog.md` | Dated log of changes with affected module tags |
+| File | What's Inside | Color |
+|:---|:---|:---|
+| `architecture.md` | Module structure, data flow, entry points, deps, multi-layer artifacts | 🏗️ |
+| `implementation.md` | Per-module breakdown — classes, functions, test coverage | 🧩 |
+| `patterns.md` | Naming conventions, folder rules, recurring idioms | 🪢 |
+| `decisions.md` | ADRs — why you made choices (git-inferred + stated) | 🧠 |
+| `changelog.md` | Dated log of changes with module tags | 📋 |
 
-Auto-update rules are planted into your project's `CLAUDE.md` so Claude reads the index at session start and updates only the touched sections after each commit — no manual re-runs.
+Auto-update rules are planted into your project's `CLAUDE.md` (or equivalent) so your AI reads the index at session start and updates only touched sections after commits — no manual re-runs needed.
 
-On first run, you will be asked whether `.codebase-indexer/` should be **committed** (shared with the team) or **gitignored** (local only). Both work — the index is fully regeneratable from source.
+On first run, you'll be asked whether `.codebase-indexer/` should be **committed** (team-shared) or **gitignored** (local only). Either way, the index is fully regeneratable from source.
 
 ---
 
-## Modes
+## <span style="color:#F97316">⚙️</span> Modes
 
-### Phase 1 — Initial Scan
+### 🔍 Phase 1 — Initial Scan
 
 Full first-time indexing. Uses **signal-first, tiered extraction** across your source tree:
 
-1. Query retrieval narrows the relevant file set from a natural-language description of your project.
-2. A four-tier extraction model (L0 exports → L1 signatures → L2 implementation signals → L3 dropped noise) compresses source into structured IR.
-3. Budget-aware context packing allocates token budget across tiers before writing docs.
-4. Five doc files are written; rules are installed in `CLAUDE.md`.
-
-### Supplement Mode
-
-If a comprehensive `CLAUDE.md` already exists but no structured index does, the indexer generates **only the three gap docs** (`patterns.md`, `decisions.md`, `changelog.md`) — skipping what is already documented. Saves tokens at indexing time too.
-
-### Phase 2 — Update Mode
-
-Triggered automatically when you say *"update docs"*, *"re-index"*, or finish a feature or bugfix. Refreshes **only the changed files and their depth-1 dependents** — not the whole project.
-
-- Without graph: import-scan finds direct callers/dependents.
-- With `code-review-graph`: `get_impact_radius_tool` traces exact blast radius.
-
-Saves **12,000–17,000 tokens immediately** per update run.
-
-### Savings Report
-
-```bash
-/codebase-indexer savings            # terminal comparison (last run vs cumulative)
-/codebase-indexer savings html       # timestamped HTML report with visual A/B bar
+```
+1. Query retrieval     →  Natural language narrows the relevant file set
+2. Four-tier extraction  →  L0 exports → L1 signatures → L2 signals → L3 noise dropped
+3. Budget-aware packing →  Token budget allocated across tiers
+4. Docs written         →  Five index files + auto-update rules
 ```
 
-After every successful run, **both are generated automatically** — no extra command needed. HTML reports land in `.codebase-indexer/reports/codebase-indexer-savings-YYYYMMDD-HHMMSS.html`.
+### 📝 Supplement Mode
 
-### Benchmark Mode
+If a comprehensive `CLAUDE.md` already exists but no structured index does, the indexer generates **only the three gap docs** (`patterns.md`, `decisions.md`, `changelog.md`) — skipping what's already documented. Saves tokens even at indexing time.
+
+### 🔄 Phase 2 — Update Mode
+
+Triggered by saying *"update docs"*, *"re-index"*, or finishing a feature/bugfix. Refreshes **only changed files + their depth-1 dependents** — not the whole project.
+
+- Without graph: import-scan finds direct callers
+- With `code-review-graph`: `get_impact_radius_tool` traces exact blast radius
+
+**Saves 12,000–17,000 tokens immediately** per update run.
+
+### 📊 Savings Report
 
 ```bash
-/codebase-indexer benchmark          # exact byte-counted A/B + terminal output
-/codebase-indexer benchmark html     # full HTML report with all charts
-/codebase-indexer benchmark both     # terminal + HTML
+/codebase-indexer savings            # Terminal comparison (last run vs cumulative)
+/codebase-indexer savings html       # Timestamped HTML report with visual A/B bar
 ```
 
-Produces a `benchmark_measured` entry with exact token counts from actual file sizes — not heuristics. Use this in demos when you need hard evidence.
+HTML reports land in `.codebase-indexer/reports/codebase-indexer-savings-YYYYMMDD-HHMMSS.html`
+
+### 🎯 Benchmark Mode
+
+```bash
+/codebase-indexer benchmark          # Exact byte-counted A/B + terminal output
+/codebase-indexer benchmark html     # Full HTMLreport with charts
+/codebase-indexer benchmark both      # Terminal + HTML
+```
+
+Produces `benchmark_measured` entries with exact token counts — not heuristics. Use this in demos when you need hard evidence.
 
 ---
 
-## How It Works
+## <span style="color:#EC4899">🎨</span> How It Works
 
-### The core idea
+### The Core Idea
 
 ```
-First run (once)                         Every session after (automatic)
-────────────────────────────             ──────────────────────────────────────
-Signal-first scan + IR extraction   →    Claude reads .codebase-indexer/docs/ at start
-Budget-aware context packing        →    800–4,000 tokens instead of 8K–160K
-Write 5 index docs                  →    No rescan needed
-Plant rules in CLAUDE.md            →    Docs auto-update after each commit
-Ask: commit or gitignore index?     →    Changelog entries appended on change
+First run (once)                              Every session after (automatic)
+────────────────────────────                   ──────────────────────────────────────
+Signal-first scan + IR extraction         →    AI reads .codebase-indexer/docs/
+Budget-aware context packing               →    800–4,000 tokens instead of 8K–160K
+Write 5 index docs                         →    No rescan needed
+Plant rules in CLAUDE.md                    →    Docs auto-update after each commit
+Ask: commit or gitignore?                   →    Changelog entries appended on change
 ```
 
-### Architecture flow
+### Architecture Flow
 
 ```mermaid
 flowchart LR
-    U["User Request"] --> A["Indexer Skill"]
-    A --> Q["Query Retrieval\nquery_context.py"]
-    Q --> L["Local Search\n(filesystem + lexical ranking)"]
-    L --> K["Top-K Relevant Files"]
-    K --> P["Context Packing\ncontext_packer.py\nL0 / L1 / L3"]
-    A --> D["Delta Summaries\ndelta_context.py\nL2 updates"]
+    U["🤖 User / AI Agent"] --> A["⚡ Indexer Skill"]
+    A --> Q["🔍 Query Retrieval"]
+    Q --> L["📁 Local Search (filesystem + ranking)"]
+    L --> K["📌 Top-K Relevant Files"]
+    K --> P["📦 Context Packer (L0/L1/L3)"]
+    A --> D["🔄 Delta Summaries (L2 updates)"]
     D --> P
-    P --> M["LLM Reasoning"]
-    M --> O["Docs + Changelog Updates"]
-    O --> S["Savings + Benchmark Reporting"]
+    P --> M["🧠 LLM Reasoning"]
+    M --> O["📝 Docs + Changelog"]
+    O --> S["💰 Savings + Benchmark"]
 
-    classDef input fill:#E6F4FF,stroke:#0B6BCB,color:#0A2F57,stroke-width:2px;
-    classDef retrieve fill:#E9FFF3,stroke:#1B8F4D,color:#0D4D2A,stroke-width:2px;
-    classDef process fill:#FFF6E8,stroke:#C77A12,color:#5B3A0A,stroke-width:2px;
-    classDef output fill:#F4ECFF,stroke:#7B4DB9,color:#3E2266,stroke-width:2px;
+    classDef input fill:#F3E8FF,stroke:#9333EA,color:#581C87,stroke-width:2px;
+    classDef retrieve fill:#E0F2FE,stroke:#0284C7,color:#0C4A6E,stroke-width:2px;
+    classDef process fill:#FEF3C7,stroke:#F59E0B,color:#78350F,stroke-width:2px;
+    classDef output fill:#D1FAE5,stroke:#059669,color:#064E3B,stroke-width:2px;
 
     class U input;
     class A,Q,L,K retrieve;
@@ -156,279 +176,262 @@ flowchart LR
     class O,S output;
 ```
 
-### Request lifecycle
+### Request Lifecycle
 
 ```mermaid
 sequenceDiagram
-    participant U as User
-    participant I as Indexer
-    participant R as Retrieval
-    participant P as Packer
-    participant L as LLM
-    participant D as Docs / Stats
+    participant U as 🤖 User/Agent
+    participant I as ⚡ Indexer
+    participant R as 🔍 Retrieval
+    participant P as 📦 Packer
+    participant L as 🧠 LLM
+    participant D as 📝 Docs
 
-    U->>I: "index this codebase" or "update docs"
-    I->>R: Natural-language query to narrow file set
-    R->>R: Rank candidate files (signal-first tiers)
-    R-->>P: Top-K files with tier labels
-    I->>P: Add delta context (update mode only)
-    P-->>L: Budgeted L0/L1/L2/L3 payload
-    L-->>I: Structured doc content + inferred changes
-    I->>D: Write/patch docs + append savings log
-    I-->>U: Summary + terminal savings card + HTML report path
+    U->>I: "index this" or "update docs"
+    I->>R: Natural-language query
+    R->>R: Rank candidate files
+    R-->>P: Top-K files with tiers
+    I->>P: Delta context (update mode)
+    P-->>L: Budgeted payload
+    L-->>I: Structured docs + inferred changes
+    I->>D: Write/patch docs + log
+    I-->>U: Summary + savings card
 ```
 
 ---
 
-## Signal-First Extraction
+## <span style="color:#6366F1">🔬</span> Signal-First Extraction
 
-All scans apply a **four-tier extraction model** — highest signal first, noise dropped or compressed:
+All scans use a **four-tier extraction model** — highest signal first, noise dropped:
 
 | Tier | Content | Treatment |
-|---|---|---|
+|:---:|:---|:---|
 | **L0** | Public exports, API surface, module boundaries | Always keep — full fidelity |
-| **L1** | Function signatures, type annotations, doc comments | Keep compressed |
-| **L2** | Implementation bodies with signal words (`TODO`, `throws`, security patterns, `console.log`) | Summarize by diff hunk |
+| **L1** | Function signatures, types, doc comments | Keep compressed |
+| **L2** | Implementation with signal words (`TODO`, `throws`, security patterns) | Summarize by diff hunk |
 | **L3** | Tests, build files, auto-generated code | Drop or reference-only |
 
-Context budget is then allocated across tiers: changed/hotspot files get detailed treatment; unchanged neighbors get structure-only. This is coordinated by `scripts/context_packer.py`.
+Context budget is allocated across tiers: changed/hotspot files get detailed treatment; unchanged neighbors get structure-only.
 
-**Health and security signals** flagged during L2 extraction: `API_KEY =`, `SECRET =`, `password =`, `token =`, `console.log(`, `debugger;`, `pdb.set_trace()`, `TODO: remove`, `FIXME`.
+> ⚠️ **Health & security signals flagged during L2:** `API_KEY =`, `SECRET =`, `password =`, `token =`, `console.log(`, `debugger;`, `pdb.set_trace()`, `TODO: remove`, `FIXME`
 
 ---
 
-## Helper Scripts
+## <span style="color:#14B8A6">🛠️</span> Helper Scripts
 
-All scripts are **deterministic helpers** — suggest them to the user, do not run autonomously.
-
-| Script | What it does |
-|---|---|
-| `context_packer.py` | Budget-aware L0/L1/L3 context packing — takes a list of files, returns a prioritized context payload within a token budget |
-| `delta_context.py` | L2-style diff summarization — reads a unified diff (stdin or `--repo + --files`) and outputs structured hunk summaries |
-| `query_context.py` | Prompt-driven retrieval — auto-selects relevant files from a natural-language query, then packs them into budget |
-| `coupling_report.py` | Git co-change analysis — mines commit history to surface files that move together >50% of the time |
-| `savings_report.py` | Generates terminal comparison or HTML savings report from the project-local `.codebase-indexer/savings.jsonl` log |
-| `savings_benchmark.py` | Measured A/B benchmark — counts actual byte sizes of source vs index files, logs a `benchmark_measured` entry |
+| Script | What It Does |
+|:---|:---|
+| `context_packer.py` | Budget-aware L0/L1/L3 context packing within token budget |
+| `delta_context.py` | L2-style diff summarization from unified diff (stdin or --repo + --files) |
+| `query_context.py` | Prompt-driven retrieval — auto-selects relevant files from query |
+| `coupling_report.py` | Git co-change analysis — surfaces files that move together |
+| `savings_report.py` | Terminal + HTML savings reporting from `.codebase-indexer/savings.jsonl` |
+| `savings_benchmark.py` | Measured A/B benchmark — counts actual byte sizes |
 
 ```bash
-# Example: get coupling signals for a project
+# Get coupling signals
 python3 ~/.claude/skills/codebase-indexer/scripts/coupling_report.py --project-root .
 
-# Example: generate savings HTML report
+# Generate savings HTML report
 python3 ~/.claude/skills/codebase-indexer/scripts/savings_report.py \
-  --project-root . --format both \
-  --output .codebase-indexer/reports/savings.html --timestamp-html yes
+  --project-root . --format both --output .codebase-indexer/reports/savings.html
 ```
 
 ---
 
-## Savings Visibility
+## <span style="color:#F59E0B">📈</span> Savings Visibility
 
-Every run appends to two logs:
+Every run appends to:
 
 ```
-~/.claude/skills/codebase-indexer/stats/runs.jsonl   ← global (all projects)
-<project-root>/.codebase-indexer/savings.jsonl        ← project-local
+~/.claude/skills/codebase-indexer/stats/runs.jsonl          ← global (all projects)
+<project-root>/.codebase-indexer/savings.jsonl             ← project-local
 ```
 
-The HTML report (`/codebase-indexer savings html`) includes:
+The HTML report includes:
 
-- **Efficiency headline** — average % context reduction across all runs
-- **Token-to-pages translation** — "≈ 23 pages of source code not loaded"
-- **Visual A/B stacked bar** — indexer cost vs saved-now vs future savings against baseline
-- **ROI payback** — estimated update sessions until indexing investment is recouped
-- **Mode contribution chart** — which modes (full / update / supplement) are generating the most value
-- **Docs inventory** — every `.codebase-indexer/docs/*.md` file with size and last-modified date
-- **Full run history** — all logged runs, color-coded by mode, with expand/collapse
+- **Efficiency headline** — average % context reduction
+- **Token-to-pages** — "≈ 23 pages of source code not loaded"
+- **Visual A/B stacked bar** — indexer cost vs saved vs future savings
+- **ROI payback** — estimated sessions until indexing investment is recouped
+- **Mode contribution chart** — full/update/supplement value breakdown
+- **Docs inventory** — every `.md` file with size + last-modified
+- **Full run history** — color-coded by mode, expandable
 
 ---
 
-## Multi-Repo Support
+## <span style="color:#8B5CF6">🌐</span> Multi-Repo Support
 
-If a `workspace.md` registry exists in the **parent directory** of your project, the indexer detects it and enables cross-repo context lookups.
+If a `workspace.md` registry exists in the **parent directory**, the indexer enables cross-repo context lookups:
 
 ```
 parent-dir/
-  workspace.md          ← agent-agnostic registry of all repos + their docs paths
+  workspace.md              ← agent-agnostic registry of all repos + docs paths
   repo-a/
     .codebase-indexer/
   repo-b/
     .codebase-indexer/
 ```
 
-Format is plain markdown — readable by any AI agent, not just Claude. See `templates/workspace.md` for the spec.
+Format is plain markdown — readable by **any AI agent**, not just Claude.
 
 ---
 
-## How We Compare
+## <span style="color:#06B6D4">🏆</span> How We Compare
 
-There are several strong codebase indexing tools. Here is how the architectural approaches differ:
+| Tool | Approach | Infrastructure | Token Strategy |
+|:---|:---|:---|:---|
+| **codebase-indexer** | Docs-first — pre-built markdown, auto-maintained | **Agent skill only** | Read once at start (800–4K tokens) |
+| codebase-memory-mcp | Graph query — SQLite + Cypher | MCP server + tree-sitter | Query on demand |
+| SocratiCode | Vector search — Qdrant HNSW + BM25 | Docker + Qdrant + Ollama | Semantic chunks |
+| Axon | Knowledge graph — KuzuDB + clustering | Python + KuzuDB | Structural queries |
+| coderlm | Symbol table — Rust server | Separate Rust process | Symbol lookups |
 
-| Tool | Approach | Infrastructure needed | Token strategy |
-|---|---|---|---|
-| **codebase-indexer** | **Docs-first** — pre-built markdown summaries, auto-maintained | Claude Code skill only | Read once at session start (800–4K tokens) |
-| [codebase-memory-mcp](https://github.com/DeusData/codebase-memory-mcp) | Graph query — SQLite + Cypher + Aho-Corasick multi-pattern search | MCP server + tree-sitter | Query on demand (~3.4K per query vs ~412K grep) |
-| [SocratiCode](https://github.com/giancarloerra/SocratiCode) | Vector search — Qdrant HNSW + BM25 hybrid + RRF | Docker + Qdrant + Ollama | Semantic chunks on demand |
-| [Axon](https://github.com/harshkedia177/axon) | Knowledge graph — KuzuDB + Leiden clustering + execution flow tracing | Python + KuzuDB | Structural queries + BFS impact radius |
-| [coderlm](https://github.com/JaredStewart/coderlm) | Symbol table — Rust server + tree-sitter cross-references | Separate Rust server process | Precise symbol lookups |
+**Choose codebase-indexer when you want:**
+- Zero infrastructure — no Docker, no database, no server
+- Human-readable index — teammates open `architecture.md` in any editor
+- Automatic maintenance — docs update as you ship
+- Works with **any AI agent** — not locked to one platform
 
-**When to choose codebase-indexer:**
-- You want **zero infrastructure** — no Docker, no database, no server process.
-- You want the index to be **human-readable** — your teammates can open `architecture.md` in any editor.
-- You want **automatic maintenance** — docs update themselves as you ship, not on explicit re-index commands.
-- Your workflow is **session-based** — Claude Code is your primary interface.
-
-**When to choose a graph/vector tool instead:**
-- You need **ad-hoc structural queries** at runtime ("what are all callers of `processOrder`?").
-- Your codebase is >500K LOC and you need sub-second traversal.
-- You want **live file watching** and index updates triggered automatically on save.
+**Choose graph/vector tools when you need:**
+- Ad-hoc structural queries at runtime
+- >500K LOC with sub-second traversal
+- Live file watching on every save
 
 ---
 
-## Supported Project Types
+## <span style="color:#10B981">🎓</span> Supported Project Types
 
-Auto-detects and handles:
-
-**Languages:** TypeScript · JavaScript · Python · Go · Rust · Java · Kotlin · C# (.NET) · PHP · Ruby · Swift
+**Languages:** TypeScript · JavaScript · Python · Go · Rust · Java · Kotlin · C# · PHP · Ruby · Swift
 
 **Build systems:** npm/pnpm/yarn · Maven · Gradle · Cargo · Go modules · pip/Poetry · Composer
 
-**Multi-layer artifacts** (indexed alongside source when present):
-- Database schemas: `.sql`, `prisma.schema`, `schema.rb`
+**Multi-layer artifacts:**
+- DB schemas: `.sql`, `prisma.schema`, `schema.rb`
 - API specs: OpenAPI `.yaml` / `.json`
 - Infrastructure: `docker-compose.yml`, `Dockerfile`, Terraform `.tf`
 
-**Repo layouts:** monorepo · polyglot · multi-module — all handled. Cross-repo context available via `workspace.md` registry.
+**Repo layouts:** monorepo · polyglot · multi-module — all handled via `workspace.md` registry.
 
 ---
 
-## Skill Structure
+## <span style="color:#F97316">📂</span> Skill Structure
 
 ```
 ~/.claude/skills/codebase-indexer/
-  SKILL.md                          ← entry point: mode detection + execution table
-  guides/
-    initial-scan.md                 ← Phase 1: full scan steps (signal-first)
-    update-mode.md                  ← Phase 2: diff-based update steps
-    signal-first-ir.md              ← 4-tier extraction + budget-aware packing spec
-    gitignore-rules.md              ← .gitignore handling
-    graph-integration.md            ← code-review-graph MCP integration (optional)
-    multi-repo.md                   ← cross-repo workspace registry
-    stats-logging.md                ← savings logging spec (JSONL format)
-    stats-report.md                 ← savings report generation guide
-  templates/
-    architecture.md                 ← output template
-    implementation.md               ← output template
-    patterns.md                     ← output template
-    decisions.md                    ← output template (with Why vs Why (inferred))
-    changelog.md                    ← output template
-    claude-md-rules.md              ← rules auto-planted into project CLAUDE.md
-    workspace.md                    ← workspace registry template
-  scripts/
-    context_packer.py               ← L0/L1/L3 budget-aware packing
-    delta_context.py                ← L2-style diff summarization
-    query_context.py                ← prompt-driven retrieval
-    coupling_report.py              ← git co-change coupling analysis
-    savings_report.py               ← terminal + HTML savings reporting
-    savings_benchmark.py            ← measured A/B benchmark
-  stats/
-    runs.jsonl                      ← append-only global run log (auto-created)
+├── SKILL.md                        ← entry point: mode detection + execution
+├── guides/
+│   ├── initial-scan.md             ← Phase 1: full scan steps
+│   ├── update-mode.md              ← Phase 2: diff-based refresh
+│   ├── signal-first-ir.md          ← 4-tier extraction + budget spec
+│   ├── graph-integration.md        ← code-review-graph MCP (optional)
+│   └── multi-repo.md               ← cross-repo workspace registry
+├── templates/
+│   ├── architecture.md             ← output template
+│   ├── implementation.md           ← output template
+│   ├── patterns.md                 ← output template
+│   ├── decisions.md                ← output template
+│   ├── changelog.md                ← output template
+│   └── claude-md-rules.md          ←auto-planted update rules
+├── scripts/
+│   ├── context_packer.py           ← L0/L1/L3 budget packing
+│   ├── delta_context.py            ← L2 diff summarization
+│   ├── query_context.py            ← prompt-driven retrieval
+│   ├── coupling_report.py          ← git co-change analysis
+│   ├── savings_report.py           ← terminal + HTML reporting
+│   └── savings_benchmark.py        ← measured A/B benchmark
+└── stats/
+    └── runs.jsonl                  ← append-only global run log
 ```
 
-Uses **progressive disclosure** — Claude loads only the guides relevant to the current phase, not the full skill on every invocation.
+Uses **progressive disclosure** — only relevant guides load per phase.
 
 ---
 
-## Frequently Asked Questions
+## <span style="color:#6366F1">❓</span> FAQ
 
 <details>
 <summary><strong>Does the index get stale?</strong></summary>
 
-The rules installed in your project's `CLAUDE.md` tell Claude to check and update relevant docs after every feature or bugfix. For most projects this keeps the index accurate without manual intervention. If you want a full refresh, say `"re-index"` in Claude Code.
+Rules in your project's `CLAUDE.md` tell your AI to check and update relevant docs after every change. Most projects stay accurate without manual intervention. For a full refresh: say "re-index".
 
 </details>
 
 <details>
 <summary><strong>Should I commit .codebase-indexer/?</strong></summary>
 
-Your choice, made on first run. **Commit it** if you want your team to benefit from the index immediately on clone. **Gitignore it** if you prefer local-only usage. The index is fully regeneratable from source at any time.
+Your call. **Commit it** if you want the team to benefit on clone. **Gitignore it** if you prefer local-only. Index is fully regeneratable from source anytime.
 
 </details>
 
 <details>
 <summary><strong>My project already has a detailed CLAUDE.md. Does it still help?</strong></summary>
 
-Yes — **Supplement Mode** kicks in. The indexer detects that `architecture.md` and `implementation.md` context already exists and generates only the three docs that CLAUDE.md typically skips: `patterns.md`, `decisions.md`, and `changelog.md`. No redundant work.
+Yes — **Supplement Mode** detects existing context and generates only `patterns.md`, `decisions.md`, and `changelog.md`. No redundant work.
 
 </details>
 
 <details>
 <summary><strong>How accurate are the token savings estimates?</strong></summary>
 
-Savings estimates use file-count buckets (small/medium/large/XL) and are labeled `"estimated"` in the log. For exact measurements, run `/codebase-indexer benchmark` — it reads actual byte sizes of source files vs index files and logs a `"measured"` entry. The HTML report always shows which entries are measured vs estimated.
+Estimates use file-count buckets (labeled "estimated"). For exact counts, run `/codebase-indexer benchmark` — it reads actual byte sizes and logs "measured" entries.
 
 </details>
 
 <details>
-<summary><strong>Can I use this with a code review graph / LSP?</strong></summary>
+<summary><strong>Can I use this with other AI agents besides Claude?</strong></summary>
 
-Yes. If `.code-review-graph/graph.db` exists in the project root, the indexer uses `get_impact_radius_tool` in update mode to trace exact blast radius from changed symbols — more precise than import scanning alone. See `guides/graph-integration.md`.
-
-</details>
-
-<details>
-<summary><strong>What is "supplement mode" vs "update mode"?</strong></summary>
-
-- **Supplement mode** — runs once, when no index exists but a comprehensive CLAUDE.md does. Adds the missing docs.
-- **Update mode** — runs repeatedly, after commits. Keeps existing docs current as code changes.
-
-They are different phases solving different problems.
+**Absolutely.** The skill works with any AI agent that can execute Python and read files. Clone it anywhere, reference `SKILL.md`, and enjoy the same benefits.
 
 </details>
 
 ---
 
-## Evolution
+## <span style="color:#EC4899">🧬</span> Evolution
 
-| Phase | What was added |
-|---|---|
+| Version | What Was Added |
+|:---:|:---|
 | v1 | One-shot scanner → five docs + CLAUDE.md rules |
-| v2 | Auto-update mode — diff-based refresh of only changed sections |
-| v3 | Changelog and ADR tracking — persistent decision memory across sessions |
-| v4 | Graph-aware blast radius — update mode scopes to impact radius, not just changed files |
-| v5 | Signal-first IR — four-tier extraction + budget-aware L0/L1/L2/L3 packing |
-| v6 | Token savings visibility — project-local JSONL log + measured A/B benchmark |
-| v7 | HTML savings report — visual A/B bar, efficiency %, ROI payback, docs inventory |
-| v8 | Multi-repo workspace registry — cross-repo context via agent-agnostic `workspace.md` |
-| v9 | Test coverage docs — 5-tier matching, per-module coverage map in `implementation.md` |
-| v10 | AI-inferred "why" — git log evidence fills `Why (inferred):` in `decisions.md` |
+| v2 | Auto-update mode — diff-based refresh |
+| v3 | Changelog and ADR tracking |
+| v4 | Graph-aware blast radius |
+| v5 | Signal-first IR — four-tier extraction |
+| v6 | Token savings visibility |
+| v7 | HTML savings report |
+| v8 | Multi-repo workspace registry |
+| v9 | Test coverage docs |
+| v10 | AI-inferred "why" from git logs |
 
 ---
 
-## Contributing
+## <span style="color:#10B981">🤝</span> Contributing
 
-Issues and pull requests are welcome. Before opening a PR:
+Issues and PRs welcome! Before opening a PR:
 
-1. Check that your change has a clear token-efficiency rationale — the primary value prop is reducing tokens per session, not adding features for their own sake.
-2. If you are adding a new guide or template, follow the progressive-disclosure pattern: Claude should only load your file when it is needed for the current phase.
-3. Run the syntax check on any modified scripts: `python3 -c "import ast; ast.parse(open('scripts/your_script.py').read())"`.
-
----
-
-## Acknowledgments
-
-- [heyEdem](https://github.com/heyEdem) — original author; this project started as a fork of their codebase-indexer.
-- [Composto](https://github.com/mertcanaltin/composto) — inspiration for tiered signal extraction, context budgeting, and health/security-aware design.
-- [tree-sitter](https://tree-sitter.github.io/tree-sitter/) — AST-first parsing model and language grammar ecosystem that informed the extraction tier design.
-- [@joshtriedcoding](https://x.com/joshtriedcoding/status/2042535715712516284?s=20) — inspiration for the Virtual FS-style retrieval approach for agent workflows.
-- [Upstash Redis Search](https://upstash.com/blog/first-look-at-upstash-redis-search) — reference for search/indexing patterns behind the retrieval layer.
-- [DeusData/codebase-memory-mcp](https://github.com/DeusData/codebase-memory-mcp) — inspiration for impact-radius thinking and structural query-first workflows.
-- [giancarloerra/SocratiCode](https://github.com/giancarloerra/SocratiCode) — inspiration for multi-layer context coverage and resumable indexing patterns.
-- [harshkedia177/axon](https://github.com/harshkedia177/axon) — inspiration for entry-point orientation and git co-change coupling signals.
-- [JaredStewart/coderlm](https://github.com/JaredStewart/coderlm) — inspiration for symbol-first exploration over raw file scanning.
+1. Check that your change has a clear **token-efficiency rationale** — the primary value is reducing tokens per session, not adding features for their own sake.
+2. Follow **progressive disclosure** — new guides should only load when needed for the current phase.
+3. Run syntax check: `python3 -c "import ast; ast.parse(open('scripts/your_script.py').read())"`
 
 ---
 
-## License
+## <span style="color:#F59E0B">💜</span> Acknowledgments
 
-MIT © [Elvis020](https://github.com/Elvis020)
+- [heyEdem](https://github.com/heyEdem) — original author; codebase-indexer started as a fork
+- [Composto](https://github.com/mertcanaltin/composto) — tiered signal extraction, context budgeting inspiration
+- [tree-sitter](https://tree-sitter.github.io/tree-sitter/) — AST-first parsing model
+- [@joshtriedcoding](https://x.com/joshtriedcoding/status/2042535715712516284) — Virtual FS-style retrieval inspiration
+- [Upstash Redis Search](https://upstash.com/blog/first-look-at-upstash-redis-search) — search/indexing patterns
+- [DeusData/codebase-memory-mcp](https://github.com/DeusData/codebase-memory-mcp) — impact-radius thinking
+- [giancarloerra/SocratiCode](https://github.com/giancarloerra/SocratiCode) — multi-layer context coverage
+- [harshkedia177/axon](https://github.com/harshkedia177/axon) — entry-point orientation, git coupling
+- [JaredStewart/coderlm](https://github.com/JaredStewart/coderlm) — symbol-first exploration
+
+---
+
+<p align="center">
+
+**MIT** © [Elvis020](https://github.com/Elvis020)
+
+Made with 💜 for developers who don't want their AI to read the same file twice
+
+</p>
