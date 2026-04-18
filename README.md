@@ -11,6 +11,10 @@ This project borrows the shape of a few strong ideas, especially Composto's AST-
 - [tree-sitter](https://tree-sitter.github.io/tree-sitter/) — parsing model and language-grammar ecosystem that informed the AST-first direction.
 - [@joshtriedcoding on X](https://x.com/joshtriedcoding/status/2042535715712516284?s=20) — inspiration for the Virtual FS-style retrieval direction for agent workflows.
 - [Upstash: First Look at Upstash Redis Search](https://upstash.com/blog/first-look-at-upstash-redis-search) — reference material behind the Virtual FS search/indexing idea.
+- [DeusData/codebase-memory-mcp](https://github.com/DeusData/codebase-memory-mcp) — inspiration for impact-radius and structural query-first workflows.
+- [giancarloerra/SocratiCode](https://github.com/giancarloerra/SocratiCode) — inspiration for multi-layer context coverage beyond source files.
+- [harshkedia177/axon](https://github.com/harshkedia177/axon) — inspiration for entry-point orientation and git coupling signals.
+- [JaredStewart/coderlm](https://github.com/JaredStewart/coderlm) — inspiration for symbol/query-driven exploration over raw file scanning.
 
 ## Evolution
 
@@ -91,6 +95,7 @@ Optional deterministic helpers (inside this repo):
 - `scripts/context_packer.py` — budget-aware L0/L1/L3 context packing
 - `scripts/delta_context.py` — L2-style diff summarization for update mode
 - `scripts/query_context.py` — prompt-driven retrieval + budget-aware packing (auto file selection from user request)
+- `scripts/coupling_report.py` — git co-change coupling report to surface hidden file dependencies
 
 ## Skill structure
 
@@ -106,6 +111,7 @@ Optional deterministic helpers (inside this repo):
     context_packer.py       ← deterministic context packing helper
     delta_context.py        ← deterministic delta summarization helper
     query_context.py        ← prompt-driven context retrieval helper
+    coupling_report.py      ← git co-change coupling helper
   templates/
     architecture.md         ← template for each doc file
     implementation.md

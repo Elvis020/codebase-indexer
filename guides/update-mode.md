@@ -69,6 +69,7 @@ git diff -- <changed-file> | python3 ~/.claude/skills/codebase-indexer/scripts/d
 | Renamed files or folders | `architecture.md`, `patterns.md` |
 | New dependency added | `architecture.md` |
 | New naming or code pattern | `patterns.md` |
+| Frequent co-change pair emerged from recent commits | `patterns.md` (refresh ## Co-Change Coupling) |
 | Security-sensitive finding (secret/debug artifact/risky pattern) | `changelog.md` and optionally `decisions.md` if architectural |
 | Architectural decision | `decisions.md` (see step 5) |
 | Test file added or removed | Re-map ## Test Coverage in `implementation.md` (see below) |
@@ -98,6 +99,12 @@ When imports or HTTP client calls change to/from a workspace repo:
 If `workspace_available = false` → skip this section entirely.
 
 Apply targeted edits — do not rewrite unaffected sections.
+
+For `patterns.md`, refresh co-change coupling when recent git history indicates new strong file pairs.
+Optional helper — suggest to the user (do not run autonomously):
+```bash
+python3 ~/.claude/skills/codebase-indexer/scripts/coupling_report.py --repo . --max-commits 200 --top 10
+```
 
 **Budget-aware update packing (critical):**
 - Detailed context for changed files and depth-1 dependents

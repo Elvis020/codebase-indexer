@@ -83,6 +83,18 @@ Capture non-code artifacts that shape behavior:
 Record these in `architecture.md` under "Multi-Layer Context Artifacts" with location and why they matter.
 If absent, write "`— not found in scan`" for that artifact class.
 
+**Git co-change coupling (recommended for patterns):**
+
+Use recent git history to capture files that frequently evolve together. This reveals hidden dependencies useful for onboarding and safer edits.
+
+Optional helper — suggest to the user (do not run autonomously):
+```bash
+python3 ~/.claude/skills/codebase-indexer/scripts/coupling_report.py --repo . --max-commits 400 --top 20
+```
+
+When available, populate "Co-Change Coupling (Git History)" in `patterns.md` with top high-signal pairs.
+If history is unavailable/shallow, write "`— not determinable from git history`".
+
 **Test Discovery Matching Priority:**
 
 When mapping source modules to test files, use this priority ladder (stop at first match):

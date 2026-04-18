@@ -15,6 +15,11 @@
 - Dependency injection: [how DI works, if at all]
 - Validation: [where input is validated]
 
+## Co-Change Coupling (Git History)
+| File A | File B | Coupling Signal |
+|---|---|---|
+| `src/auth/service.ts` | `src/user/repository.ts` | Co-changed in [N] commits (Jaccard: [0.xx]) |
+
 ## Testing Conventions
 - Test file location: [e.g., `src/test/`, `__tests__/`, `*_test.go`]
 - Test naming: [e.g., `should_doX_when_Y`]

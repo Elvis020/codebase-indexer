@@ -98,6 +98,7 @@ Both guides reference templates in `templates/` — read those when generating o
     context_packer.py             ← deterministic L0/L1/L3 budget-aware context packing
     delta_context.py              ← deterministic L2-style diff summarization
     query_context.py              ← prompt-driven retrieval + packing (auto file selection)
+    coupling_report.py            ← git co-change file coupling report for hidden dependency signals
     savings_report.py             ← project-local savings report generator (terminal or HTML)
   stats/
     runs.jsonl                    ← append-only log of every indexer run (auto-created)
