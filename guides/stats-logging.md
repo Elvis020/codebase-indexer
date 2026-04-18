@@ -25,7 +25,7 @@ One JSON object per line (JSONL). Fields:
 | `date` | string | ISO date of the run, e.g. `"2026-03-13"` |
 | `project` | string | Basename of the working directory, e.g. `"event-mapper-v2"` |
 | `project_root` | string | Absolute root path of the project (strict project-local filtering key) |
-| `mode` | string | `"full"`, `"supplement"`, or `"update"` |
+| `mode` | string | `"full"`, `"supplement"`, `"update"`, or `"benchmark_measured"` (manual A/B demo run) |
 | `docs_generated` | number | Count of doc files written this run |
 | `docs_skipped` | number | Count of doc files skipped (2 for supplement, 0 otherwise) |
 | `project_files` | number | Approximate number of source files in the project (exclude node_modules, dist, etc.) |

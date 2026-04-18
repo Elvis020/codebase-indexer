@@ -40,7 +40,7 @@ At scan time, check for `../workspace.md` relative to the project root:
 
 1. **Detect cross-repo calls** — HTTP clients, package imports from workspace namespace, gRPC stubs, service references
 2. **Match against registry** — look up the target service in workspace.md
-3. **Point at that repo's docs/** — reference the target repo's `docs/` folder for structural info
+3. **Point at that repo's index docs** — reference the target repo's `.codebase-indexer/docs/` folder for structural info
 
 Example output in `implementation.md`:
 
@@ -48,8 +48,8 @@ Example output in `implementation.md`:
 ## Cross-Repo References
 | Call | Target Repo | Target Docs |
 |---|---|---|
-| `authService.verifyToken()` | auth-service | ../auth-service/docs/implementation.md |
-| Stripe API | payment-service | ../payment-service/docs/architecture.md |
+| `authService.verifyToken()` | auth-service | ../auth-service/.codebase-indexer/docs/implementation.md |
+| Stripe API | payment-service | ../payment-service/.codebase-indexer/docs/architecture.md |
 ```
 
 ## Limitations

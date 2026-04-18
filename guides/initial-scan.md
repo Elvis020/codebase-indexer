@@ -7,8 +7,8 @@ Follow these steps in order. Read templates from `templates/` when generating ea
 Read `CLAUDE.md` if it exists. Ask yourself: does it already document architecture, directory structure, key abstractions, state management, routing, and conventions?
 
 **If yes (comprehensive CLAUDE.md) → Supplement Mode:**
-- Skip generating `docs/architecture.md` and `docs/implementation.md` — they would duplicate what CLAUDE.md already covers and create two sources of truth that will drift.
-- Only generate: `docs/patterns.md`, `docs/decisions.md`, `docs/changelog.md`
+- Skip generating `.codebase-indexer/docs/architecture.md` and `.codebase-indexer/docs/implementation.md` — they would duplicate what CLAUDE.md already covers and create two sources of truth that will drift.
+- Only generate: `.codebase-indexer/docs/patterns.md`, `.codebase-indexer/docs/decisions.md`, `.codebase-indexer/docs/changelog.md`
 - Tell the user: "CLAUDE.md already covers architecture and implementation. Generating only gap docs: patterns, decisions, changelog."
 - Jump to Step 3 (generating only the 3 gap files), then continue from Step 4.
 
@@ -92,20 +92,20 @@ If workspace is available, detect cross-repo calls:
 1. Grep for imports from workspace namespace, HTTP calls to known services, gRPC stubs
 2. Read `../workspace.md` to get the workspace registry
 3. Match the target against the registry (repo name or description)
-4. Record the target repo path and its docs/ location
+4. Record the target repo path and its `.codebase-indexer/docs/` location
 5. If no match found → omit from cross-repo references (don't guess)
 
 If `workspace_available = false` → skip this step entirely.
 
 ## Step 3: Generate Doc Files
 
-Write all five files under `docs/` in the project root:
+Write all five files under `.codebase-indexer/docs/` in the project root:
 
-1. Read `templates/architecture.md` → write `docs/architecture.md`
-2. Read `templates/implementation.md` → write `docs/implementation.md`
-3. Read `templates/patterns.md` → write `docs/patterns.md`
-4. Read `templates/decisions.md` → write `docs/decisions.md`
-5. Read `templates/changelog.md` → write `docs/changelog.md`
+1. Read `templates/architecture.md` → write `.codebase-indexer/docs/architecture.md`
+2. Read `templates/implementation.md` → write `.codebase-indexer/docs/implementation.md`
+3. Read `templates/patterns.md` → write `.codebase-indexer/docs/patterns.md`
+4. Read `templates/decisions.md` → write `.codebase-indexer/docs/decisions.md`
+5. Read `templates/changelog.md` → write `.codebase-indexer/docs/changelog.md`
 
 **When generating `implementation.md`:**
 - Populate the ## Test Coverage table using the test discovery results from Step 2
@@ -173,12 +173,12 @@ Also append the same entry to `<project-root>/.codebase-indexer/savings.jsonl` f
 
 At the end of every successful indexing run, generate savings outputs by default:
 1. Print project-local terminal savings comparison
-2. Create a new timestamped HTML report under `docs/`
+2. Create a new timestamped HTML report under `.codebase-indexer/reports/`
 
 Run:
 
 ```bash
-python3 ~/.claude/skills/codebase-indexer/scripts/savings_report.py --project-root . --format both --output docs/codebase-indexer-savings.html --timestamp-html yes
+python3 ~/.claude/skills/codebase-indexer/scripts/savings_report.py --project-root . --format both --output .codebase-indexer/reports/codebase-indexer-savings.html --timestamp-html yes
 ```
 
 This must run for every successful indexer run; do not make it optional.

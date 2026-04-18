@@ -4,7 +4,7 @@ Follow these steps after a feature or bugfix. Read templates from `templates/` w
 
 ## Step 1: Read Existing Docs
 
-Use **Read** on each file in `docs/`. Understand what is already documented.
+Use **Read** on each file in `.codebase-indexer/docs/`. Understand what is already documented.
 
 ## Step 2: Identify What Changed
 
@@ -125,7 +125,7 @@ If no — skip `decisions.md`.
 
 ## Step 6: Append Changelog Entry
 
-Always append a new dated entry to `docs/changelog.md`:
+Always append a new dated entry to `.codebase-indexer/docs/changelog.md`:
 
 ```markdown
 ## YYYY-MM-DD — [brief description]
@@ -140,7 +140,7 @@ Read `guides/stats-logging.md` and append one entry to `stats/runs.jsonl`, then 
 - `mode`: `"update"`
 - `docs_generated`: count of doc files that were actually edited this run
 - `docs_skipped`: 0
-- `project_files`: reuse the approximate count from the existing `docs/` files (e.g. from `architecture.md` or `implementation.md` scope notes), or from the original scan — do not re-count the whole project
+- `project_files`: reuse the approximate count from the existing `.codebase-indexer/docs/` files (e.g. from `architecture.md` or `implementation.md` scope notes), or from the original scan — do not re-count the whole project
 - `tokens_saved_this_run`: `12000` if `graph_available = false`; `17000` if `graph_available = true`
 - `tokens_saved_future_est`: `0` — update runs maintain existing savings, they do not create new recurring ones
 - `cost_saved_est_usd`: `tokens_saved_this_run / 1_000_000 * 3.0` (future_est is 0 so omit it from the sum)
@@ -156,12 +156,12 @@ Also append the same entry to `<project-root>/.codebase-indexer/savings.jsonl` f
 
 At the end of every successful update run, generate savings outputs by default:
 1. Print project-local terminal savings comparison
-2. Create a new timestamped HTML report under `docs/`
+2. Create a new timestamped HTML report under `.codebase-indexer/reports/`
 
 Run:
 
 ```bash
-python3 ~/.claude/skills/codebase-indexer/scripts/savings_report.py --project-root . --format both --output docs/codebase-indexer-savings.html --timestamp-html yes
+python3 ~/.claude/skills/codebase-indexer/scripts/savings_report.py --project-root . --format both --output .codebase-indexer/reports/codebase-indexer-savings.html --timestamp-html yes
 ```
 
 This must run for every successful indexer update; do not make it optional.

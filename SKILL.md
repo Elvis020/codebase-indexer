@@ -1,11 +1,15 @@
 ---
 name: codebase-indexer
-description: Use when opening an existing codebase for the first time, or after completing a feature or bugfix — generates and maintains /docs/ index files so Claude does not re-scan the whole codebase each session.
+description: Use when opening an existing codebase for the first time, or after completing a feature or bugfix — generates and maintains .codebase-indexer/docs/ index files so Claude does not re-scan the whole codebase each session.
 ---
 
 # Codebase Indexer
 
-Scan a project once, write five lean doc files to `docs/`, and read them every future session instead of re-scanning the whole codebase. After each feature or bugfix, update only what changed.
+Scan a project once, write five lean doc files to `.codebase-indexer/docs/`, and read them every future session instead of re-scanning the whole codebase. After each feature or bugfix, update only what changed.
+
+Default behavior policy:
+- Savings reporting is automatic after every successful index/update run (terminal + timestamped HTML).
+- Benchmarking is explicit/manual only (`/codebase-indexer benchmark ...`) and never auto-runs.
 
 ## Mode Detection
 
@@ -17,10 +21,10 @@ Before executing any mode, check for workspace context:
   └─ no  → workspace_available = false
 ```
 
-Then detect docs presence:
+Then detect index docs presence:
 
 ```
-docs/ exists?
+`.codebase-indexer/docs/` exists?
   ├─ yes → Signal present?
   │          ├─ yes → Phase 2: Update Mode
   │          └─ no  → Ask: "Re-index from scratch, or update from recent changes?"
@@ -30,6 +34,14 @@ docs/ exists?
 ```
 
 Before entering indexing/update modes, check savings-report intent:
+
+```
+User asks "/codebase-indexer benchmark" (or "benchmark raw vs indexer")?
+  ├─ yes → Benchmark Mode (measured A/B, project-local, then terminal/HTML report)
+  └─ no  → continue
+```
+
+Then check savings-report intent:
 
 ```
 User asks "/codebase-indexer savings" (or "show savings")?
@@ -53,10 +65,11 @@ User asks "/codebase-indexer savings" (or "show savings")?
 
 | Mode | Read this guide |
 |------|----------------|
+| Benchmark request | Read `guides/stats-report.md` and run measured A/B benchmark (`benchmark_measured`) with requested output mode |
 | Savings report request | Read `guides/stats-report.md` and generate project-local terminal or HTML comparison |
-| No `docs/`, no comprehensive CLAUDE.md | Read `guides/initial-scan.md` — generate all 5 docs |
-| No `docs/`, comprehensive CLAUDE.md exists | Read `guides/initial-scan.md` Step 0 — generate gap docs only (`patterns.md`, `decisions.md`, `changelog.md`) |
-| `docs/` exists, update after changes | Read `guides/update-mode.md` and follow it |
+| No `.codebase-indexer/docs/`, no comprehensive CLAUDE.md | Read `guides/initial-scan.md` — generate all 5 docs |
+| No `.codebase-indexer/docs/`, comprehensive CLAUDE.md exists | Read `guides/initial-scan.md` Step 0 — generate gap docs only (`patterns.md`, `decisions.md`, `changelog.md`) |
+| `.codebase-indexer/docs/` exists, update after changes | Read `guides/update-mode.md` and follow it |
 
 Both guides reference templates in `templates/` — read those when generating or updating doc files.
 
@@ -75,21 +88,22 @@ Both guides reference templates in `templates/` — read those when generating o
     stats-logging.md              ← how to append a run entry to stats/runs.jsonl
     stats-report.md               ← how to summarize stats when user asks
   templates/
-    architecture.md               ← template for docs/architecture.md
-    implementation.md             ← template for docs/implementation.md
-    patterns.md                   ← template for docs/patterns.md
-    decisions.md                  ← template for docs/decisions.md
-    changelog.md                  ← template for docs/changelog.md
+    architecture.md               ← template for .codebase-indexer/docs/architecture.md
+    implementation.md             ← template for .codebase-indexer/docs/implementation.md
+    patterns.md                   ← template for .codebase-indexer/docs/patterns.md
+    decisions.md                  ← template for .codebase-indexer/docs/decisions.md
+    changelog.md                  ← template for .codebase-indexer/docs/changelog.md
     workspace.md                  ← template for workspace.md registry
   scripts/
     context_packer.py             ← deterministic L0/L1/L3 budget-aware context packing
     delta_context.py              ← deterministic L2-style diff summarization
+    query_context.py              ← prompt-driven retrieval + packing (auto file selection)
     savings_report.py             ← project-local savings report generator (terminal or HTML)
   stats/
     runs.jsonl                    ← append-only log of every indexer run (auto-created)
 ```
 
-**Stats and Savings (always-on):** After every successful run, append entries to global/project-local logs, print a terminal savings comparison, and generate a new timestamped HTML savings report in `docs/`. Savings reporting is required at end-of-run, not optional.
+**Stats and Savings (always-on):** After every successful run, append entries to global/project-local logs, print a terminal savings comparison, and generate a new timestamped HTML savings report in `.codebase-indexer/reports/`. Savings reporting is required at end-of-run, not optional.
 
 ## Common Mistakes
 
@@ -97,7 +111,7 @@ Both guides reference templates in `templates/` — read those when generating o
 |---|---|
 | Generating all 5 docs when a comprehensive CLAUDE.md exists | Run Step 0 — supplement mode generates only 3 gap docs |
 | Auto-running `git diff` without checking CLAUDE.md policies | Suggest the command to the user; never run autonomously unless project allows it |
-| Gitignoring `docs/` without asking the user | Ask: shared (committed) or local-only (gitignored)? |
+| Writing indexer docs into project-owned `docs/` | Always use `.codebase-indexer/docs/` to avoid collisions |
 | Using `git diff HEAD~1` on merge or squash commits | Use `git diff --name-only $(git merge-base HEAD HEAD~1)..HEAD` |
 | Re-scanning the full codebase in Update Mode | If graph available, use `get_impact_radius_tool`; else scope to changed files and direct neighbors |
 | Reading raw source for every file in initial scan | Use signal-first IR/tiered extraction first; only drill into raw code for unresolved ambiguity |

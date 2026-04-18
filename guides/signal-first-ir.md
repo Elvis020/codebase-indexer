@@ -58,6 +58,11 @@ python3 ~/.claude/skills/codebase-indexer/scripts/delta_context.py --repo . --fi
 git diff -- path/to/file | python3 ~/.claude/skills/codebase-indexer/scripts/delta_context.py
 ```
 
+4. Prompt-driven retrieval + packing (no manual grep workflow):
+```bash
+python3 ~/.claude/skills/codebase-indexer/scripts/query_context.py --root . --query "user request here" --budget 3500
+```
+
 ---
 
 ## Budget-Aware Packing
@@ -81,7 +86,7 @@ During scan/update, tag modules with lightweight risk signals when evidence exis
 - **Hardcoded secrets** — string literals matching patterns like `API_KEY =`, `SECRET =`, `password =`, `token =`, `private_key =`, or values resembling keys (long alphanumeric strings assigned to credential-named variables)
 - **Debug artifacts** — `console.log(`, `debugger;`, `print(`, `TODO: remove`, `FIXME`, `pdb.set_trace()` in non-test production files
 
-When a signal is found, note it in `docs/changelog.md` under the current date. Only escalate to `docs/decisions.md` if the finding requires an architectural response.
+When a signal is found, note it in `.codebase-indexer/docs/changelog.md` under the current date. Only escalate to `.codebase-indexer/docs/decisions.md` if the finding requires an architectural response.
 
 ---
 

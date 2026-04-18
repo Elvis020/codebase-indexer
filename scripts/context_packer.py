@@ -22,6 +22,8 @@ EXCLUDE_DIRS = {
     ".git",
     "_tmp_code-review-graph",
     ".claude",
+    ".codebase-indexer",
+    ".minimax",
     "node_modules",
     "dist",
     "build",
